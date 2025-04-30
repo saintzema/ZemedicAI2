@@ -130,12 +130,12 @@ const Dashboard = () => {
       </nav>
       
       {/* Dashboard Layout with Sidebar */}
-      <div className="pt-16 md:pl-64">
+      <div className="flex flex-col md:flex-row pt-16">
         {/* Sidebar */}
         <DashboardSidebar user={user} />
         
         {/* Main Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 md:ml-64">
           <div className="max-w-7xl mx-auto">
             <div className="md:flex md:items-center md:justify-between mb-8">
               <div>
