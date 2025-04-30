@@ -13,6 +13,7 @@ const Dashboard = () => {
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState('overview');
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const navigate = useNavigate();
   
   useEffect(() => {
