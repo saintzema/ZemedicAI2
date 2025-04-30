@@ -80,6 +80,7 @@ const ImageUpload = ({ onUploadComplete }) => {
     
     setUploading(true);
     setError('');
+    setUploadStep(2); // Move to analysis step
     
     try {
       // Create a FormData object
@@ -102,6 +103,10 @@ const ImageUpload = ({ onUploadComplete }) => {
         }
       });
       
+      // Process response
+      setAnalysisResult(response.data);
+      setUploadStep(3); // Move to results step
+      
       // Call the callback with the analysis result
       if (onUploadComplete) {
         onUploadComplete(response.data);
@@ -110,6 +115,7 @@ const ImageUpload = ({ onUploadComplete }) => {
     } catch (err) {
       console.error('Upload error:', err);
       setError(err.response?.data?.detail || 'Error uploading image. Please try again.');
+      setUploadStep(1); // Return to upload step on error
     } finally {
       setUploading(false);
     }
