@@ -148,8 +148,8 @@ const Navigation = () => {
                 </svg>
               </button>
               <div id="mobile-solutions" className="hidden pl-4 pt-2 pb-1 space-y-2">
-                <a href="#solutions" className="block py-2 text-sm text-blue-400 hover:text-white">Hospital Integration</a>
-                <a href="#solutions" className="block py-2 text-sm text-blue-400 hover:text-white">Solar-Powered Booths</a>
+                <Link to="/solutions/hospital-integration" className="block py-2 text-sm text-blue-400 hover:text-white">Hospital Integration</Link>
+                <Link to="/solutions/solar-booths" className="block py-2 text-sm text-blue-400 hover:text-white">Solar-Powered Booths</Link>
                 <a href="#solutions" className="block py-2 text-sm text-blue-400 hover:text-white">Mobile Applications</a>
                 <a href="#solutions" className="block py-2 text-sm text-blue-400 hover:text-white">Research Platform</a>
               </div>
