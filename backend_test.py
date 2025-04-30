@@ -140,7 +140,7 @@ class ZemedicAITester:
             200
         )
 
-def test_login_with_credentials(self, email, password):
+    def test_login_with_credentials(self, email, password):
         """Test login with specific credentials"""
         # Use URLSearchParams format for login
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
