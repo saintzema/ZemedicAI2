@@ -78,7 +78,7 @@ const DashboardSidebar = ({ user }) => {
       </div>
       
       {/* Sidebar for desktop */}
-      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 left-0">
         <div className="flex-1 flex flex-col min-h-0 bg-gray-900">
           <div className="flex items-center h-16 flex-shrink-0 px-4 bg-gradient-to-r from-blue-950 to-purple-900">
             <img className="h-8 w-auto" src="/images/logo.svg" alt="ZemedicAI" />
