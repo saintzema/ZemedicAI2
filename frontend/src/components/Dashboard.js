@@ -133,7 +133,10 @@ const Dashboard = () => {
       {/* Dashboard Layout with Sidebar */}
       <div className="flex pt-16">
         {/* Sidebar */}
-        <DashboardSidebar user={user} />
+        <DashboardSidebar 
+          user={user} 
+          onNavigate={(tab) => setActiveTab(tab)}
+        />
         
         {/* Main Content */}
         <main className="flex-1 p-6 md:ml-64">
