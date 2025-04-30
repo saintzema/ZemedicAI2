@@ -112,20 +112,20 @@ const DashboardSidebar = ({ user, onNavigate }) => {
           <div className="flex-1 flex flex-col overflow-y-auto">
             <nav className="flex-1 px-2 py-4 space-y-1">
               {navigation.map((item) => (
-                <Link
+                <button
                   key={item.name}
-                  to={item.href}
+                  onClick={() => onNavigate && onNavigate(item.tab)}
                   className={`${
-                    location.pathname === item.href
+                    location.pathname === `/dashboard/${item.tab === 'overview' ? '' : item.tab}`
                       ? 'bg-gradient-to-r from-blue-900 to-purple-900 text-white'
-                      : 'text-gray-300 hover:bg-gray-800'
-                  } group flex items-center px-2 py-2 text-sm font-medium rounded-md`}
+                      : 'text-gray-300 hover:bg-gray-700'
+                  } group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left`}
                 >
                   <div className="mr-3 flex-shrink-0 h-6 w-6">
                     {item.icon}
                   </div>
                   {item.name}
-                </Link>
+                </button>
               ))}
             </nav>
             <div className="border-t border-gray-800 p-4">
