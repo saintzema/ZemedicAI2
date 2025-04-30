@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -10,7 +11,11 @@ const ImageUpload = ({ onUploadComplete }) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [dragActive, setDragActive] = useState(false);
+  const [uploadStep, setUploadStep] = useState(1); // 1: Upload, 2: Analysis, 3: Results
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleDrag = (e) => {
     e.preventDefault();
