@@ -782,8 +782,8 @@ const Dashboard = () => {
                 </div>
               </div>
             )}
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
       
       <MedicalDisclaimer position="bottom" />
