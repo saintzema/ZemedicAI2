@@ -137,29 +137,76 @@ const Dashboard = () => {
         
         {/* Main Content */}
         <main className="flex-1 p-6 md:ml-64">
-          <div className="max-w-7xl mx-auto">
-            <div className="md:flex md:items-center md:justify-between mb-8">
-              <div>
-                <h1 className="text-2xl font-semibold text-white">
-                  Welcome, {isDoctor ? "Dr. " : ""}{user?.first_name} {user?.last_name}
-                </h1>
-                <p className="text-blue-300">
-                  {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                </p>
-              </div>
-              
-              <div className="mt-4 md:mt-0">
-                <button 
-                  onClick={() => setActiveTab('upload')}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                  New Analysis
-                </button>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+            {/* Upload Button */}
+            <div className="mb-6 flex justify-end">
+              <button
+                onClick={() => setShowUploadModal(true)}
+                className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-md hover:from-blue-700 hover:to-purple-700 transition-colors duration-200 shadow-md"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                Upload Image
+              </button>
+            </div>
+            
+            {/* Content goes here */}
+            {activeTab === "overview" && (
+              <DashboardOverview user={user} />
+            )}
+            
+            {activeTab === "analyses" && (
+              <DashboardAnalyses user={user} />
+            )}
+            
+            {activeTab === "doctors" && (
+              <DashboardDoctors user={user} />
+            )}
+            
+            {activeTab === "settings" && (
+              <DashboardSettings user={user} />
+            )}
+          </div>
+          
+          {/* Upload Image Modal */}
+          {showUploadModal && (
+            <div className="fixed inset-0 z-50 overflow-y-auto">
+              <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+                  <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
+                </div>
+                
+                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                
+                <div className="inline-block align-bottom bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
+                  <div className="absolute top-0 right-0 pt-4 pr-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowUploadModal(false)}
+                      className="bg-gray-800 rounded-md text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    >
+                      <span className="sr-only">Close</span>
+                      <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  <div className="p-6">
+                    <ImageUpload 
+                      onUploadComplete={(result) => {
+                        setShowUploadModal(false);
+                        // Handle the result (e.g., navigate to analysis details)
+                        console.log('Upload completed:', result);
+                        // Refresh analyses if needed
+                      }} 
+                    />
+                  </div>
+                </div>
               </div>
             </div>
+          )}
             
             {/* Tab Navigation */}
             <div className="border-b border-gray-700 mb-6">
