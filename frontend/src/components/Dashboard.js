@@ -786,7 +786,6 @@ const Dashboard = () => {
         </div>
         <MedicalDisclaimer position="bottom" />
       </div>
-    </div>
   );
 };
 
