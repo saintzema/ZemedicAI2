@@ -6,6 +6,7 @@ import TypingAnimation from './components/TypingAnimation';
 import AfricaMap from './components/AfricaMap';
 import MedicalDisclaimer from './components/MedicalDisclaimer';
 import Dashboard from './components/Dashboard';
+import ImageUpload from './components/ImageUpload';
 import HospitalIntegration from './components/solutions/HospitalIntegration';
 import SolarPoweredBooths from './components/solutions/SolarPoweredBooths';
 
