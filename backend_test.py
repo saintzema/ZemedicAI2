@@ -140,6 +140,48 @@ class ZemedicAITester:
             200
         )
 
+def test_login_with_credentials(self, email, password):
+        """Test login with specific credentials"""
+        # Use URLSearchParams format for login
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        data = f"username={email}&password={password}"
+        
+        success, response = self.run_test(
+            f"Login with {email}",
+            "POST",
+            "token",
+            200,
+            data=None,
+            headers=headers
+        )
+        
+        # Make a direct request since we need to send form data
+        if not success:
+            url = f"{self.base_url}/token"
+            try:
+                response = requests.post(
+                    url, 
+                    data=data,
+                    headers=headers
+                )
+                
+                if response.status_code == 200:
+                    self.tests_passed += 1
+                    print(f"✅ Passed - Status: {response.status_code}")
+                    response_data = response.json()
+                    self.token = response_data.get('access_token')
+                    return True, response_data
+                else:
+                    print(f"❌ Failed - Expected 200, got {response.status_code}")
+                    print(f"Response: {response.text}")
+                    return False, {}
+            except Exception as e:
+                print(f"❌ Failed - Error: {str(e)}")
+                return False, {}
+        
+        self.token = response.get('access_token')
+        return success, response
+
 def main():
     # Setup
     tester = ZemedicAITester()
@@ -147,8 +189,15 @@ def main():
     # Run tests
     health_success, _ = tester.test_health_check()
     
-    # Only proceed with user tests if health check passes
+    # Test with provided test credentials
     if health_success:
+        print("\n🔍 Testing with provided test credentials...")
+        login_success, _ = tester.test_login_with_credentials("newtest@example.com", "testpassword")
+        
+        if login_success:
+            tester.test_get_user_profile()
+        
+        # Also test registration and login with new user
         register_success, _ = tester.test_register_user()
         
         if register_success:
