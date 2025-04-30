@@ -130,33 +130,105 @@ const ImageUpload = ({ onUploadComplete }) => {
     
     setUploading(true);
     setError('');
+    setUploadStep(2); // Move to analysis step
     
-    // Simulate a network request
+    // Simulate network delay
     setTimeout(() => {
-      const mockAnalysisResult = {
-        id: 'demo-' + Math.random().toString(36).substr(2, 9),
-        imageType: imageType,
-        findings: [
-          { name: imageType === 'xray' ? 'Pneumonia' : 'Glioblastoma', 
-            location: imageType === 'xray' ? 'Right Lower Lobe' : 'Frontal Lobe', 
-            severity: 'Moderate' 
-          },
-          { name: imageType === 'xray' ? 'Pleural Effusion' : 'Midline Shift', 
-            location: imageType === 'xray' ? 'Right Side' : 'From Left to Right', 
-            severity: 'Mild' 
-          }
-        ],
-        confidenceScores: {
-          [imageType === 'xray' ? 'Pneumonia' : 'Glioblastoma']: 0.94,
-          [imageType === 'xray' ? 'Pleural Effusion' : 'Midline Shift']: 0.78,
-          [imageType === 'xray' ? 'Tuberculosis' : 'Meningioma']: 0.05
+      // Mock more detailed findings with highlighted regions and severity
+      const mockFindings = imageType === 'xray' ? [
+        {
+          id: 'finding-1',
+          name: 'Pneumonia',
+          location: 'Right Lower Lobe',
+          severity: 'Moderate',
+          confidence: 0.94,
+          recommendation: 'Antibiotic therapy recommended. Follow-up X-ray in 2 weeks.',
+          coordinates: { x: 60, y: 70, radius: 30 }, // For highlighting on image
+          lifestyle_recommendation: 'Rest and adequate hydration. Avoid smoking and pollutants.',
+          next_steps: 'Schedule follow-up with pulmonologist within 2 weeks.'
         },
-        timestamp: new Date().toISOString(),
-        imageUrl: preview
+        {
+          id: 'finding-2',
+          name: 'Pleural Effusion',
+          location: 'Right Side',
+          severity: 'Mild',
+          confidence: 0.78,
+          recommendation: 'Monitor closely. Consider thoracentesis if symptoms worsen.',
+          coordinates: { x: 70, y: 80, radius: 25 },
+          lifestyle_recommendation: 'Maintain upright position when possible to improve breathing.',
+          next_steps: 'If shortness of breath increases, seek immediate medical attention.'
+        },
+        {
+          id: 'finding-3',
+          name: 'Atelectasis',
+          location: 'Left Lower Lobe',
+          severity: 'Mild',
+          confidence: 0.65,
+          recommendation: 'Breathing exercises. Incentive spirometry.',
+          coordinates: { x: 40, y: 75, radius: 20 },
+          lifestyle_recommendation: 'Regular deep breathing exercises every hour while awake.',
+          next_steps: 'Follow up with primary care physician in 2-3 weeks.'
+        }
+      ] : [
+        {
+          id: 'finding-1',
+          name: 'Disc Herniation',
+          location: 'L4-L5',
+          severity: 'Moderate',
+          confidence: 0.89,
+          recommendation: 'Physical therapy. NSAIDs. Surgical consultation if neurological symptoms develop.',
+          coordinates: { x: 50, y: 60, radius: 15 },
+          lifestyle_recommendation: 'Avoid heavy lifting and maintain proper posture. Consider ergonomic improvements to work environment.',
+          next_steps: 'Begin physical therapy within 1 week. Schedule neurosurgery consultation if symptoms worsen.'
+        },
+        {
+          id: 'finding-2',
+          name: 'Spinal Stenosis',
+          location: 'L3-L4',
+          severity: 'Mild',
+          confidence: 0.76,
+          recommendation: 'Conservative management. Physical therapy. Reassess in 1 month.',
+          coordinates: { x: 50, y: 45, radius: 15 },
+          lifestyle_recommendation: 'Maintain neutral spine positions. Avoid activities that extend the back excessively.',
+          next_steps: 'Begin core strengthening program. Follow up with spine specialist in 4-6 weeks.'
+        },
+        {
+          id: 'finding-3',
+          name: 'Facet Joint Arthropathy',
+          location: 'L5-S1',
+          severity: 'Mild',
+          confidence: 0.68,
+          recommendation: 'Anti-inflammatory medication. Consider facet joint injections if pain persists.',
+          coordinates: { x: 50, y: 75, radius: 10 },
+          lifestyle_recommendation: 'Apply heat therapy for 15-20 minutes twice daily. Avoid prolonged sitting.',
+          next_steps: 'If pain persists beyond 3 weeks, consider referral for interventional pain management.'
+        }
+      ];
+      
+      // Mock response with additional data
+      const mockResponse = {
+        id: 'mock-analysis-' + Date.now(),
+        user_id: 'current-user',
+        image_type: imageType,
+        findings: mockFindings,
+        confidence_scores: mockFindings.reduce((obj, finding) => {
+          obj[finding.name] = finding.confidence;
+          return obj;
+        }, {}),
+        overall_impression: imageType === 'xray' 
+          ? 'Consistent with community-acquired pneumonia and small pleural effusion. No evidence of tuberculosis or malignancy.'
+          : 'Degenerative changes in the lumbar spine with disc herniation and spinal stenosis. No evidence of fracture or malignancy.',
+        image_url: preview,
+        analyzed_image_url: preview, // In a real system, this would be the image with markings
+        timestamp: new Date().toISOString()
       };
       
+      // Set analysis result
+      setAnalysisResult(mockResponse);
+      setUploadStep(3); // Move to results step
+      
       if (onUploadComplete) {
-        onUploadComplete(mockAnalysisResult);
+        onUploadComplete(mockResponse);
       }
       
       setUploading(false);
