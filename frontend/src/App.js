@@ -1195,8 +1195,8 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Solutions</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-blue-300 hover:text-white transition duration-300">Hospital Integration</a></li>
-              <li><a href="#" className="text-blue-300 hover:text-white transition duration-300">Solar-Powered Booths</a></li>
+              <li><Link to="/solutions/hospital-integration" className="text-blue-300 hover:text-white transition duration-300">Hospital Integration</Link></li>
+              <li><Link to="/solutions/solar-booths" className="text-blue-300 hover:text-white transition duration-300">Solar-Powered Booths</Link></li>
               <li><a href="#" className="text-blue-300 hover:text-white transition duration-300">Mobile Applications</a></li>
               <li><a href="#" className="text-blue-300 hover:text-white transition duration-300">X-ray Integration</a></li>
               <li><a href="#" className="text-blue-300 hover:text-white transition duration-300">Custom Solutions</a></li>
