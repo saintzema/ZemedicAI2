@@ -1705,6 +1705,9 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path="/hospital-integration" element={<HospitalIntegration />} />
+          {/* Public solution pages */}
+          <Route path="/solutions/hospital-integration" element={<HospitalIntegration />} />
+          <Route path="/solutions/solar-booths" element={<SolarPoweredBooths />} />
         </Routes>
       </BrowserRouter>
     </div>
