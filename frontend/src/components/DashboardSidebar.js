@@ -159,21 +159,23 @@ const DashboardSidebar = ({ user, onNavigate }) => {
           <div className="flex-1 pt-5 pb-4">
             <nav className="px-2 space-y-1">
               {navigation.map((item) => (
-                <Link
+                <button
                   key={item.name}
-                  to={item.href}
+                  onClick={() => {
+                    onNavigate && onNavigate(item.tab);
+                    setIsMobileMenuOpen(false);
+                  }}
                   className={`${
-                    location.pathname === item.href
+                    location.pathname === `/dashboard/${item.tab === 'overview' ? '' : item.tab}`
                       ? 'bg-gradient-to-r from-blue-900 to-purple-900 text-white'
                       : 'text-gray-300 hover:bg-gray-700'
-                  } group flex items-center px-2 py-2 text-base font-medium rounded-md`}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  } group flex items-center px-2 py-2 text-base font-medium rounded-md w-full text-left`}
                 >
                   <div className="mr-4 flex-shrink-0 h-6 w-6">
                     {item.icon}
                   </div>
                   {item.name}
-                </Link>
+                </button>
               ))}
             </nav>
             <div className="border-t border-gray-800 mt-6 pt-4 px-2">
