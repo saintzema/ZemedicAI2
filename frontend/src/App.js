@@ -7,6 +7,7 @@ import AfricaMap from './components/AfricaMap';
 import MedicalDisclaimer from './components/MedicalDisclaimer';
 import Dashboard from './components/Dashboard';
 import HospitalIntegration from './components/HospitalIntegration';
+import ImageUpload from './components/ImageUpload';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -287,3 +288,495 @@ const Hero = () => {
     </div>
   );
 };
+
+// Login and Registration Components
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    
+    try {
+      // Using URLSearchParams to format the request body as application/x-www-form-urlencoded
+      const params = new URLSearchParams();
+      params.append("username", email);
+      params.append("password", password);
+      
+      const response = await axios.post(`${API}/token`, params, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      
+      localStorage.setItem("token", response.data.access_token);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(
+        err.response?.data?.detail || 
+        "Failed to log in. Please check your credentials and try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-950 to-black flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="flex justify-center">
+          <Link to="/" className="inline-block">
+            <img className="h-16 w-auto" src="/images/logo.svg" alt="ZemedicAI" />
+          </Link>
+        </div>
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+          Sign in to your account
+        </h2>
+        <p className="mt-2 text-center text-sm text-blue-300">
+          Or{' '}
+          <Link to="/register" className="font-medium text-blue-400 hover:text-blue-300 transition duration-300">
+            create a new account
+          </Link>
+        </p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-gradient-to-br from-blue-900 to-blue-950 py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-blue-800">
+          {error && (
+            <div className="mb-4 bg-red-900 bg-opacity-20 border border-red-800 text-red-300 px-4 py-3 rounded-lg">
+              <p>{error}</p>
+            </div>
+          )}
+          
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-blue-200">
+                Email address
+              </label>
+              <div className="mt-1">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-blue-950 border border-blue-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-3 rounded-md text-white text-base placeholder-blue-500"
+                  placeholder="your@email.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-blue-200">
+                Password
+              </label>
+              <div className="mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-blue-950 border border-blue-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-3 rounded-md text-white text-base placeholder-blue-500"
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 bg-blue-950 border-blue-700 rounded border-blue-700 text-blue-600 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-blue-300">
+                  Remember me
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <a href="#" className="font-medium text-blue-400 hover:text-blue-300 transition duration-300">
+                  Forgot your password?
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 text-base font-medium disabled:opacity-50"
+              >
+                {loading ? (
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : "Sign in"}
+              </button>
+            </div>
+          </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-blue-700"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-gradient-to-br from-blue-900 to-blue-950 text-blue-400">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <div>
+                <a href="#" className="w-full inline-flex justify-center py-3 px-4 border border-blue-700 rounded-md shadow-sm bg-blue-950 text-sm font-medium text-blue-300 hover:bg-blue-900 hover:bg-opacity-50 transition duration-300">
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
+                  </svg>
+                </a>
+              </div>
+
+              <div>
+                <a href="#" className="w-full inline-flex justify-center py-3 px-4 border border-blue-700 rounded-md shadow-sm bg-blue-950 text-sm font-medium text-blue-300 hover:bg-blue-900 hover:bg-opacity-50 transition duration-300">
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5.01 14.99c-1.5 1.5-3.48 2.32-5.59 2.32s-4.09-.82-5.59-2.32C4.33 15.49 3.51 13.51 3.51 11.4c0-2.11.82-4.09 2.32-5.59C7.33 4.31 9.31 3.49 11.42 3.49c2.11 0 4.09.82 5.59 2.32 1.5 1.5 2.32 3.48 2.32 5.59 0 2.11-.82 4.09-2.32 5.59z" />
+                    <path d="M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Register = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    role: "patient",
+    medicalLicenseId: ""
+  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords don't match");
+      setLoading(false);
+      return;
+    }
+    
+    // Validate doctor has medical license ID
+    if (formData.role === "doctor" && !formData.medicalLicenseId) {
+      setError("Medical license ID is required for doctor accounts");
+      setLoading(false);
+      return;
+    }
+    
+    try {
+      const userData = {
+        email: formData.email,
+        password: formData.password,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        role: formData.role,
+        medical_license_id: formData.medicalLicenseId || undefined
+      };
+      
+      await axios.post(`${API}/users`, userData);
+      
+      // Auto login after registration
+      const params = new URLSearchParams();
+      params.append("username", formData.email);
+      params.append("password", formData.password);
+      
+      const loginResponse = await axios.post(`${API}/token`, params, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      
+      localStorage.setItem("token", loginResponse.data.access_token);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(
+        err.response?.data?.detail || 
+        "Registration failed. Please try again later."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-950 to-black flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="flex justify-center">
+          <Link to="/" className="inline-block">
+            <img className="h-16 w-auto" src="/images/logo.svg" alt="ZemedicAI" />
+          </Link>
+        </div>
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+          Create your account
+        </h2>
+        <p className="mt-2 text-center text-sm text-blue-300">
+          Or{' '}
+          <Link to="/login" className="font-medium text-blue-400 hover:text-blue-300 transition duration-300">
+            sign in to your existing account
+          </Link>
+        </p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-lg">
+        <div className="bg-gradient-to-br from-blue-900 to-blue-950 py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-blue-800">
+          {error && (
+            <div className="mb-4 bg-red-900 bg-opacity-20 border border-red-800 text-red-300 px-4 py-3 rounded-lg">
+              <p>{error}</p>
+            </div>
+          )}
+          
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+              <div>
+                <label htmlFor="firstName" className="block text-sm font-medium text-blue-200">
+                  First name
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="firstName"
+                    id="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
+                    className="bg-blue-950 border border-blue-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-3 rounded-md text-white text-base placeholder-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="lastName" className="block text-sm font-medium text-blue-200">
+                  Last name
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="lastName"
+                    id="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    required
+                    className="bg-blue-950 border border-blue-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-3 rounded-md text-white text-base placeholder-blue-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-blue-200">
+                Email address
+              </label>
+              <div className="mt-1">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="bg-blue-950 border border-blue-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-3 rounded-md text-white text-base placeholder-blue-500"
+                  placeholder="your@email.com"
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-blue-200">
+                  Password
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="bg-blue-950 border border-blue-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-3 rounded-md text-white text-base placeholder-blue-500"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-blue-200">
+                  Confirm password
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    required
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="bg-blue-950 border border-blue-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-3 rounded-md text-white text-base placeholder-blue-500"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-blue-200">
+                Account type
+              </label>
+              <div className="mt-1">
+                <select
+                  id="role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="bg-blue-950 border border-blue-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-3 rounded-md text-white text-base"
+                >
+                  <option value="patient">Patient</option>
+                  <option value="doctor">Doctor</option>
+                </select>
+              </div>
+            </div>
+            
+            {formData.role === "doctor" && (
+              <div>
+                <label htmlFor="medicalLicenseId" className="block text-sm font-medium text-blue-200">
+                  Medical License ID
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="medicalLicenseId"
+                    name="medicalLicenseId"
+                    type="text"
+                    value={formData.medicalLicenseId}
+                    onChange={handleChange}
+                    className="bg-blue-950 border border-blue-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-3 rounded-md text-white text-base placeholder-blue-500"
+                  />
+                </div>
+                <p className="mt-1 text-sm text-blue-400">Required for doctor accounts to verify your credentials.</p>
+              </div>
+            )}
+
+            <div className="flex items-center">
+              <input
+                id="terms"
+                name="terms"
+                type="checkbox"
+                required
+                className="h-4 w-4 bg-blue-950 border-blue-700 rounded border-blue-700 text-blue-600 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <label htmlFor="terms" className="ml-2 block text-sm text-blue-300">
+                I agree to the{' '}
+                <a href="#" className="font-medium text-blue-400 hover:text-blue-300 transition duration-300">Terms of Service</a>
+                {' '}and{' '}
+                <a href="#" className="font-medium text-blue-400 hover:text-blue-300 transition duration-300">Privacy Policy</a>
+              </label>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 text-base font-medium disabled:opacity-50"
+              >
+                {loading ? (
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : "Create account"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <MedicalDisclaimer />
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={
+          <div className="App bg-black text-white">
+            <Navigation />
+            <Hero />
+            <div className="min-h-screen bg-black">
+              {/* Other landing page sections would go here */}
+              <div className="py-20 px-4 text-center">
+                <h2 className="text-3xl font-bold text-blue-300">Welcome to ZemedicAI</h2>
+                <p className="mt-4 max-w-2xl mx-auto text-gray-300">
+                  A revolutionary medical imaging analysis platform powered by AI.
+                </p>
+              </div>
+            </div>
+          </div>
+        } />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/hospital-integration" element={
+          <ProtectedRoute>
+            <HospitalIntegration />
+          </ProtectedRoute>
+        } />
+        <Route path="/upload" element={
+          <ProtectedRoute>
+            <ImageUpload />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
