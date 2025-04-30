@@ -6,7 +6,8 @@ import TypingAnimation from './components/TypingAnimation';
 import AfricaMap from './components/AfricaMap';
 import MedicalDisclaimer from './components/MedicalDisclaimer';
 import Dashboard from './components/Dashboard';
-import HospitalIntegration from './components/HospitalIntegration';
+import HospitalIntegration from './components/solutions/HospitalIntegration';
+import SolarPoweredBooths from './components/solutions/SolarPoweredBooths';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
