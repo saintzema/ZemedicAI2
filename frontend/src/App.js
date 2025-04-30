@@ -1709,6 +1709,7 @@ function App() {
           {/* Public solution pages */}
           <Route path="/solutions/hospital-integration" element={<HospitalIntegration />} />
           <Route path="/solutions/solar-booths" element={<SolarPoweredBooths />} />
+          <Route path="/solutions/mobile-applications" element={<MobileApplications />} />
         </Routes>
       </BrowserRouter>
     </div>
