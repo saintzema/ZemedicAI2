@@ -131,7 +131,7 @@ const Dashboard = () => {
       </nav>
       
       {/* Dashboard Layout with Sidebar */}
-      <div className="flex flex-col md:flex-row pt-16">
+      <div className="flex pt-16">
         {/* Sidebar */}
         <DashboardSidebar user={user} />
         
