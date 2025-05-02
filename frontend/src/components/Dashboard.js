@@ -62,30 +62,16 @@ const Dashboard = () => {
         });
         
         setUser(response.data);
+        setLoading(false);
       } catch (err) {
-        console.error("Failed to fetch user profile:", err);
-        setError("Failed to load user profile. Please try logging in again.");
-        localStorage.removeItem("token");
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
-      } finally {
+        console.error("Error fetching user profile:", err);
+        setError("Failed to authenticate. Please log in again.");
         setLoading(false);
       }
     };
     
     fetchUserProfile();
   }, [navigate]);
-  
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-  
-  const handleUploadComplete = (result) => {
-    setAnalysisResult(result);
-    setActiveTab('results');
-  };
   
   if (loading) {
     return (
@@ -141,675 +127,351 @@ const Dashboard = () => {
               </svg>
             </button>
             
-            {user && (
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-semibold">
-                  {user.first_name?.charAt(0)}{user.last_name?.charAt(0)}
-                </div>
-                <span>{isDoctor ? "Dr. " : ""}{user.first_name} {user.last_name}</span>
-                <button 
-                  onClick={handleLogout}
-                  className="ml-4 px-3 py-1 text-sm bg-red-600 bg-opacity-30 hover:bg-opacity-50 rounded-full transition duration-300"
-                >
-                  Logout
-                </button>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold">
+                {user?.first_name?.charAt(0) || 'U'}
               </div>
-            )}
+              <span className="hidden md:inline text-white">{user?.first_name || 'User'}</span>
+            </div>
+            
+            <button 
+              onClick={() => {
+                localStorage.removeItem("token");
+                navigate("/login");
+              }}
+              className="text-sm text-blue-200 hover:text-white transition duration-300"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </nav>
       
-      {/* Dashboard Layout with Sidebar */}
-      <div className="flex pt-16">
+      <div className="pt-16 flex min-h-screen">
         {/* Sidebar */}
         <DashboardSidebar 
-          user={user} 
-          onNavigate={(tab) => setActiveTab(tab)}
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          isDoctor={isDoctor}
+          setShowUploadModal={setShowUploadModal}
         />
         
         {/* Main Content */}
-        <main className="flex-1 p-6 md:ml-64">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-            {/* Upload Button */}
-            <div className="mb-6 flex justify-end">
-              <button
-                onClick={() => setShowUploadModal(true)}
-                className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-md hover:from-blue-700 hover:to-purple-700 transition-colors duration-200 shadow-md"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                Upload Image
-              </button>
+        <div className="flex-1 p-6 md:p-8 overflow-y-auto">
+          <main className="max-w-5xl mx-auto">
+            {/* Page Title */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-white">
+                {activeTab === 'overview' && 'Dashboard'}
+                {activeTab === 'analyses' && 'Your Analyses'}
+                {activeTab === 'doctors' && 'Your Doctors'}
+                {activeTab === 'settings' && 'Account Settings'}
+              </h1>
+              <p className="text-blue-300 mt-2">
+                {activeTab === 'overview' && 'Welcome to your health dashboard'}
+                {activeTab === 'analyses' && 'Review your medical image analyses'}
+                {activeTab === 'doctors' && 'Manage your healthcare providers'}
+                {activeTab === 'settings' && 'Update your account preferences'}
+              </p>
             </div>
             
-            {/* Content goes here */}
-            {activeTab === "overview" && (
-              <DashboardOverview user={user} />
-            )}
-            
-            {activeTab === "analyses" && (
-              <DashboardAnalyses user={user} />
-            )}
-            
-            {activeTab === "doctors" && (
-              <DashboardDoctors user={user} />
-            )}
-            
-            {activeTab === "settings" && (
-              <DashboardSettings user={user} />
-            )}
-          </div>
-          
-          {/* Upload Image Modal */}
-          {showUploadModal && (
-            <div className="fixed inset-0 z-50 overflow-y-auto">
-              <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                  <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
-                </div>
-                
-                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                
-                <div className="inline-block align-bottom bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
-                  <div className="absolute top-0 right-0 pt-4 pr-4">
-                    <button
-                      type="button"
-                      onClick={() => setShowUploadModal(false)}
-                      className="bg-gray-800 rounded-md text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                      <span className="sr-only">Close</span>
-                      <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
+            {/* Content based on active tab */}
+            {activeTab === 'overview' && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* User Profile Card */}
+                <div className="bg-gradient-to-br from-gray-900 to-blue-900 rounded-xl p-6 shadow-xl">
+                  <div className="flex items-center space-x-4 mb-6">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white text-2xl font-bold">
+                      {user?.first_name?.charAt(0) || 'U'}
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold text-white">{user?.first_name} {user?.last_name}</h2>
+                      <p className="text-blue-200">{user?.email}</p>
+                    </div>
                   </div>
                   
-                  <div className="p-6">
-                    <ImageUpload 
-                      onUploadComplete={(result) => {
-                        setShowUploadModal(false);
-                        // Handle the result (e.g., navigate to analysis details)
-                        console.log('Upload completed:', result);
-                        // Refresh analyses if needed
-                      }} 
-                    />
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-blue-300 text-sm">Account Type</p>
+                      <p className="text-white font-medium">{isDoctor ? 'Healthcare Provider' : 'Patient'}</p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-blue-300 text-sm">Member Since</p>
+                      <p className="text-white font-medium">{new Date(user?.created_at || Date.now()).toLocaleDateString()}</p>
+                    </div>
+                    
+                    <button 
+                      onClick={() => setActiveTab('settings')}
+                      className="w-full mt-4 py-2 px-4 bg-blue-700 hover:bg-blue-600 text-white rounded-lg transition duration-300"
+                    >
+                      Edit Profile
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Quick Actions */}
+                <div className="bg-gray-900 rounded-xl p-6 shadow-xl">
+                  <h2 className="text-xl font-semibold text-white mb-6">Quick Actions</h2>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <button 
+                      onClick={() => setShowUploadModal(true)}
+                      className="flex flex-col items-center justify-center p-4 bg-blue-900 hover:bg-blue-800 rounded-lg transition duration-300"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" />
+                      </svg>
+                      <span className="text-sm text-white">Upload Image</span>
+                    </button>
+                    
+                    <button 
+                      onClick={() => setActiveTab('analyses')}
+                      className="flex flex-col items-center justify-center p-4 bg-purple-900 hover:bg-purple-800 rounded-lg transition duration-300"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-purple-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                      <span className="text-sm text-white">View Analyses</span>
+                    </button>
+                    
+                    <button 
+                      onClick={() => setActiveTab('doctors')}
+                      className="flex flex-col items-center justify-center p-4 bg-green-900 hover:bg-green-800 rounded-lg transition duration-300"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      <span className="text-sm text-white">Doctors</span>
+                    </button>
+                    
+                    <button 
+                      className="flex flex-col items-center justify-center p-4 bg-red-900 hover:bg-red-800 rounded-lg transition duration-300"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm text-white">Appointments</span>
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Recent Activity */}
+                <div className="bg-gray-900 rounded-xl p-6 shadow-xl">
+                  <h2 className="text-xl font-semibold text-white mb-6">Recent Activity</h2>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-900 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">Image Uploaded</p>
+                        <p className="text-blue-300 text-sm">Chest X-Ray</p>
+                        <p className="text-gray-400 text-xs">2 hours ago</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-900 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">Analysis Completed</p>
+                        <p className="text-blue-300 text-sm">Pneumonia Detection</p>
+                        <p className="text-gray-400 text-xs">2 hours ago</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-purple-900 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">Appointment Scheduled</p>
+                        <p className="text-blue-300 text-sm">Dr. Sarah Johnson</p>
+                        <p className="text-gray-400 text-xs">Yesterday</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-          
+            )}
             
-            {/* Tab Navigation */}
-            <div className="border-b border-gray-700 mb-6">
-              <nav className="flex -mb-px" aria-label="Tabs">
-                <button
-                  onClick={() => setActiveTab('overview')}
-                  className={`${
-                    activeTab === 'overview'
-                      ? 'border-blue-500 text-blue-500'
-                      : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm mr-8`}
-                >
-                  Overview
-                </button>
-                <button
-                  onClick={() => setActiveTab('upload')}
-                  className={`${
-                    activeTab === 'upload'
-                      ? 'border-blue-500 text-blue-500'
-                      : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm mr-8`}
-                >
-                  Upload & Analyze
-                </button>
-                {analysisResult && (
-                  <button
-                    onClick={() => setActiveTab('results')}
-                    className={`${
-                      activeTab === 'results'
-                        ? 'border-blue-500 text-blue-500'
-                        : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-                    } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm mr-8`}
-                  >
-                    Analysis Results
-                  </button>
-                )}
-              </nav>
-            </div>
+            {activeTab === 'analyses' && <DashboardAnalyses user={user} />}
+            {activeTab === 'doctors' && <DashboardDoctors user={user} />}
+            {activeTab === 'settings' && <DashboardSettings user={user} />}
             
-            {/* Dashboard Overview Tab Content */}
-            {activeTab === 'overview' && (
-              <div>
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  {isDoctor ? (
-                    <>
-                      <div className="bg-gradient-to-br from-blue-900 to-purple-900 rounded-lg p-6">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-blue-300 text-sm">Total Analyses</p>
-                            <h3 className="text-2xl font-bold text-white mt-1">1,248</h3>
-                          </div>
-                          <div className="p-2 bg-white bg-opacity-20 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                            </svg>
-                          </div>
-                        </div>
-                        <div className="mt-4">
-                          <p className="text-green-400 text-sm flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                            </svg>
-                            12% increase
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-blue-900 to-purple-900 rounded-lg p-6">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-blue-300 text-sm">Patients</p>
-                            <h3 className="text-2xl font-bold text-white mt-1">347</h3>
-                          </div>
-                          <div className="p-2 bg-white bg-opacity-20 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                          </div>
-                        </div>
-                        <div className="mt-4">
-                          <p className="text-green-400 text-sm flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                            </svg>
-                            8% increase
-                          </p>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="bg-gradient-to-br from-blue-900 to-purple-900 rounded-lg p-6">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-blue-300 text-sm">My Analyses</p>
-                            <h3 className="text-2xl font-bold text-white mt-1">7</h3>
-                          </div>
-                          <div className="p-2 bg-white bg-opacity-20 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                            </svg>
-                          </div>
-                        </div>
-                        <div className="mt-4">
-                          <p className="text-blue-400 text-sm">
-                            Last scan: {new Date().toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-blue-900 to-purple-900 rounded-lg p-6">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-blue-300 text-sm">Health Status</p>
-                            <h3 className="text-2xl font-bold text-green-400 mt-1">Good</h3>
-                          </div>
-                          <div className="p-2 bg-white bg-opacity-20 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                          </div>
-                        </div>
-                        <div className="mt-4">
-                          <p className="text-blue-400 text-sm">
-                            No critical findings detected
-                          </p>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  
-                  <div className="bg-gradient-to-br from-blue-900 to-purple-900 rounded-lg p-6">
-                    <div className="flex justify-between items-start">
+            {/* Analysis Result Modal */}
+            {analysisResult && (
+              <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
+                <div className="bg-gray-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                  <div className="p-6">
+                    <div className="flex justify-between items-center mb-6">
+                      <h2 className="text-2xl font-bold text-white">Analysis Results</h2>
+                      <button 
+                        onClick={() => setAnalysisResult(null)}
+                        className="text-gray-400 hover:text-white"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div>
-                        <p className="text-blue-300 text-sm">AI Accuracy</p>
-                        <h3 className="text-2xl font-bold text-white mt-1">94.8%</h3>
-                      </div>
-                      <div className="p-2 bg-white bg-opacity-20 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <p className="text-green-400 text-sm flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                        1.2% improvement
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Recent Analyses Table */}
-                <div className="mb-8">
-                  <h2 className="text-xl font-semibold mb-4">{isDoctor ? 'Recent Analyses' : 'My Recent Analyses'}</h2>
-                  <div className="bg-gradient-to-br from-blue-950 to-purple-950 bg-opacity-40 rounded-lg overflow-hidden border border-blue-900">
-                    <table className="min-w-full divide-y divide-gray-800">
-                      <thead className="bg-gray-900 bg-opacity-40">
-                        <tr>
-                          {isDoctor && <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-blue-300 uppercase tracking-wider">Patient</th>}
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-blue-300 uppercase tracking-wider">Type</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-blue-300 uppercase tracking-wider">Date</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-blue-300 uppercase tracking-wider">Findings</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-blue-300 uppercase tracking-wider">Confidence</th>
-                          <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-blue-300 uppercase tracking-wider">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-800 bg-black bg-opacity-20">
-                        {isDoctor ? (
-                          // Doctor view - shows data for different patients
-                          <>
-                            <tr>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-bold">
-                                    SJ
-                                  </div>
-                                  <div className="ml-4">
-                                    <div className="text-sm font-medium text-white">Sarah Johnson</div>
-                                    <div className="text-sm text-gray-400">ID: 39281</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-900 text-white">X-ray</span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">March 15, 2025</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">Pneumonia</td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <span className="text-green-400 text-sm font-semibold">94%</span>
-                                  <div className="ml-2 w-20 bg-gray-700 rounded-full h-2">
-                                    <div className="bg-green-500 h-2 rounded-full" style={{width: "94%"}}></div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="#" className="text-blue-400 hover:text-blue-300">View</a>
-                              </td>
-                            </tr>
-                            
-                            <tr>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold">
-                                    MC
-                                  </div>
-                                  <div className="ml-4">
-                                    <div className="text-sm font-medium text-white">Michael Chen</div>
-                                    <div className="text-sm text-gray-400">ID: 29184</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-900 text-white">MRI</span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">March 14, 2025</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">Lumbar Disc Herniation</td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <span className="text-green-400 text-sm font-semibold">88%</span>
-                                  <div className="ml-2 w-20 bg-gray-700 rounded-full h-2">
-                                    <div className="bg-green-500 h-2 rounded-full" style={{width: "88%"}}></div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="#" className="text-blue-400 hover:text-blue-300">View</a>
-                              </td>
-                            </tr>
-                          </>
-                        ) : (
-                          // Patient view - shows only their own data
-                          <>
-                            <tr>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-900 text-white">X-ray</span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">March 10, 2025</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">No Significant Findings</td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <span className="text-green-400 text-sm font-semibold">98%</span>
-                                  <div className="ml-2 w-20 bg-gray-700 rounded-full h-2">
-                                    <div className="bg-green-500 h-2 rounded-full" style={{width: "98%"}}></div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="#" className="text-blue-400 hover:text-blue-300">View</a>
-                              </td>
-                            </tr>
-                            
-                            <tr>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-900 text-white">MRI</span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">February 22, 2025</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">Mild Tendinitis</td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <span className="text-green-400 text-sm font-semibold">91%</span>
-                                  <div className="ml-2 w-20 bg-gray-700 rounded-full h-2">
-                                    <div className="bg-green-500 h-2 rounded-full" style={{width: "91%"}}></div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="#" className="text-blue-400 hover:text-blue-300">View</a>
-                              </td>
-                            </tr>
-                          </>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                
-                {/* Additional doctor-specific content */}
-                {isDoctor && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h2 className="text-xl font-semibold mb-4">Analysis Distribution</h2>
-                      <div className="bg-gradient-to-br from-blue-950 to-purple-950 bg-opacity-40 rounded-lg p-6 border border-blue-900">
-                        <div className="space-y-4">
-                          <div>
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm text-blue-300">X-rays</span>
-                              <span className="text-sm text-blue-300">64%</span>
-                            </div>
-                            <div className="w-full bg-gray-700 rounded-full h-2">
-                              <div className="bg-blue-600 h-2 rounded-full" style={{width: "64%"}}></div>
-                            </div>
-                          </div>
+                        <div className="relative rounded-lg overflow-hidden border-2 border-blue-700 mb-4">
+                          <img 
+                            src={analysisResult.imageUrl || '/images/sample-xray.jpg'} 
+                            alt="Medical scan" 
+                            className="w-full h-auto"
+                          />
                           
-                          <div>
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm text-blue-300">MRIs</span>
-                              <span className="text-sm text-blue-300">28%</span>
-                            </div>
-                            <div className="w-full bg-gray-700 rounded-full h-2">
-                              <div className="bg-purple-600 h-2 rounded-full" style={{width: "28%"}}></div>
-                            </div>
+                          {/* Hotspots */}
+                          <div className="absolute inset-0">
+                            {analysisResult.hotspots?.map((position, index) => {
+                              let color;
+                              switch (index % 3) {
+                                case 0:
+                                  color = 'border-red-500 bg-red-500';
+                                  break;
+                                case 1:
+                                  color = 'border-yellow-500 bg-yellow-500';
+                                  break;
+                                default:
+                                  color = 'border-green-500 bg-green-500';
+                              }
+                              
+                              return (
+                                <div 
+                                  key={index}
+                                  className={`absolute w-6 h-6 rounded-full border-2 ${color} bg-opacity-50 animate-pulse-slow`}
+                                  style={{ 
+                                    top: position.top, 
+                                    left: position.left,
+                                    animationDelay: `${index * 0.2}s`
+                                  }}
+                                ></div>
+                              );
+                            })}
                           </div>
-                          
-                          <div>
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm text-blue-300">CT Scans</span>
-                              <span className="text-sm text-blue-300">8%</span>
+                        </div>
+                        
+                        <div className="mt-6">
+                          <h3 className="text-lg font-semibold mb-3">Image Information</h3>
+                          <div className="grid grid-cols-2 gap-4 bg-gray-800 p-4 rounded-lg">
+                            <div>
+                              <p className="text-blue-400 text-sm">Image Type</p>
+                              <p className="text-white">{analysisResult.imageType || 'X-Ray'}</p>
                             </div>
-                            <div className="w-full bg-gray-700 rounded-full h-2">
-                              <div className="bg-green-600 h-2 rounded-full" style={{width: "8%"}}></div>
+                            <div>
+                              <p className="text-blue-400 text-sm">Body Region</p>
+                              <p className="text-white">{analysisResult.bodyRegion || 'Chest'}</p>
+                            </div>
+                            <div>
+                              <p className="text-blue-400 text-sm">Date Taken</p>
+                              <p className="text-white">{analysisResult.dateTaken || new Date().toLocaleDateString()}</p>
+                            </div>
+                            <div>
+                              <p className="text-blue-400 text-sm">Resolution</p>
+                              <p className="text-white">{analysisResult.resolution || '2048 x 1536'}</p>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div>
-                      <h2 className="text-xl font-semibold mb-4">Custom Model Training</h2>
-                      <div className="bg-gradient-to-br from-blue-950 to-purple-950 bg-opacity-40 rounded-lg p-6 border border-blue-900">
-                        <p className="text-blue-300 mb-4">Your latest model is trained with 5,241 images and has improved detection accuracy by 2.3%.</p>
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <span className="text-sm text-blue-300">Training Progress</span>
-                            <div className="mt-1 w-40 bg-gray-700 rounded-full h-2">
-                              <div className="bg-blue-600 h-2 rounded-full" style={{width: "100%"}}></div>
-                            </div>
-                            <span className="text-xs text-green-400">Completed</span>
-                          </div>
-                          <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition duration-300">Train New Model</button>
+                      
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Findings</h3>
+                        <div className="space-y-1">
+                          {analysisResult.findings?.map((finding, index) => {
+                            const confidenceScore = finding.confidence || Math.random() * 0.5 + 0.5;
+                            let confidenceColor;
+                            
+                            if (confidenceScore > 0.9) {
+                              confidenceColor = 'text-green-400';
+                            } else if (confidenceScore > 0.7) {
+                              confidenceColor = 'text-yellow-400';
+                            } else {
+                              confidenceColor = 'text-red-400';
+                            }
+                            
+                            return (
+                              <div key={index} className="pb-4 border-b border-blue-900">
+                                <div className="flex justify-between items-center mb-2">
+                                  <h4 className="font-medium text-white">{finding.name}</h4>
+                                  <span className={`${confidenceColor} font-semibold`}>
+                                    {Math.round(confidenceScore * 100)}%
+                                  </span>
+                                </div>
+                                
+                                <div className="mb-3">
+                                  <div className="w-full bg-gray-800 rounded-full h-1.5">
+                                    <div 
+                                      className={`h-1.5 rounded-full ${
+                                        confidenceScore > 0.9 ? 'bg-green-500' :
+                                        confidenceScore > 0.7 ? 'bg-yellow-500' : 'bg-red-500'
+                                      }`} 
+                                      style={{width: `${confidenceScore * 100}%`}}
+                                    ></div>
+                                  </div>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                  <div>
+                                    <p className="text-blue-400">Location</p>
+                                    <p className="text-white">{finding.location || 'Not specified'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-blue-400">Severity</p>
+                                    <p className="text-white">{finding.severity || 'Not specified'}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Patient-specific content */}
-                {!isDoctor && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h2 className="text-xl font-semibold mb-4">Health Insights</h2>
-                      <div className="bg-gradient-to-br from-blue-950 to-purple-950 bg-opacity-40 rounded-lg p-6 border border-blue-900">
-                        <p className="text-blue-300 mb-4">Based on your scan history, our AI recommends:</p>
-                        <ul className="space-y-3">
-                          <li className="flex items-start">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Regular physical activity for joint health</span>
-                          </li>
-                          <li className="flex items-start">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Next chest X-ray recommended in 12 months</span>
-                          </li>
-                          <li className="flex items-start">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Continue monitoring wrist mobility</span>
-                          </li>
-                        </ul>
-                        <div className="mt-6 border-t border-blue-900 pt-4">
-                          <p className="text-sm text-blue-400 italic">
-                            *These are AI-generated suggestions and should not replace professional medical advice. Always consult with your healthcare provider.
-                          </p>
+                        
+                        <div className="mt-8">
+                          <h3 className="text-lg font-semibold mb-4">AI Assessment</h3>
+                          <div className="bg-blue-900 bg-opacity-30 p-4 rounded-lg border border-blue-800">
+                            <p className="text-white leading-relaxed">
+                              {analysisResult.assessment || 
+                                'Based on the analysis, there are indications of mild pneumonia in the lower right lung. The opacity patterns suggest bacterial infection rather than viral. Recommend follow-up with a pulmonologist and consider antibiotic treatment pending clinical correlation.'}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h2 className="text-xl font-semibold mb-4">Your Doctors</h2>
-                      <div className="bg-gradient-to-br from-blue-950 to-purple-950 bg-opacity-40 rounded-lg p-6 border border-blue-900">
-                        <div className="space-y-4">
-                          <div className="flex items-start">
-                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold">
-                              JW
-                            </div>
-                            <div className="ml-3">
-                              <p className="text-white font-medium">Dr. James Wilson</p>
-                              <p className="text-sm text-blue-300">Primary Physician</p>
-                              <button className="mt-1 text-xs text-blue-400 hover:text-blue-300">
-                                Share results
-                              </button>
-                            </div>
-                          </div>
-                          <div className="flex items-start">
-                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold">
-                              RL
-                            </div>
-                            <div className="ml-3">
-                              <p className="text-white font-medium">Dr. Rachel Lee</p>
-                              <p className="text-sm text-blue-300">Orthopedic Specialist</p>
-                              <button className="mt-1 text-xs text-blue-400 hover:text-blue-300">
-                                Share results
-                              </button>
-                            </div>
-                          </div>
-                          <button className="mt-4 w-full px-4 py-2 border border-blue-500 text-blue-400 rounded-lg hover:bg-blue-900 hover:bg-opacity-30 text-sm">
-                            Add New Doctor
+                        
+                        <div className="flex flex-col space-y-3 mt-6">
+                          <button className="w-full py-2 px-4 bg-blue-700 hover:bg-blue-600 text-white rounded-lg transition duration-300">
+                            Share with Doctor
+                          </button>
+                          <button className="w-full py-2 px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition duration-300">
+                            Download Report
                           </button>
                         </div>
                       </div>
                     </div>
                   </div>
-                )}
-              </div>
-            )}
-            
-            {/* Upload & Analyze Tab Content */}
-            {activeTab === 'upload' && (
-              <div className="bg-gradient-to-br from-blue-950 to-purple-950 bg-opacity-40 rounded-xl border border-blue-900 p-6">
-                <h2 className="text-xl font-semibold mb-6">Upload & Analyze Medical Images</h2>
-                <ImageUpload onUploadComplete={handleUploadComplete} />
-              </div>
-            )}
-            
-            {/* Analysis Results Tab Content */}
-            {activeTab === 'results' && analysisResult && (
-              <div className="bg-gradient-to-br from-blue-950 to-purple-950 bg-opacity-40 rounded-xl border border-blue-900 p-6">
-                <h2 className="text-xl font-semibold mb-6">Analysis Results</h2>
-                
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Image Preview */}
-                  <div className="lg:col-span-2">
-                    <div className="relative rounded-lg overflow-hidden">
-                      <img 
-                        src={analysisResult.imageUrl} 
-                        alt="Analyzed Medical Image" 
-                        className="w-full h-auto"
-                      />
-                      
-                      {/* Markers for findings */}
-                      {analysisResult.findings.map((finding, index) => {
-                        // Position markers in different places based on the index
-                        const positions = [
-                          { top: '30%', left: '40%' },
-                          { top: '50%', left: '60%' },
-                          { top: '45%', left: '30%' },
-                          { top: '60%', left: '50%' },
-                          { top: '25%', left: '55%' }
-                        ];
-                        const position = positions[index % positions.length];
-                        
-                        // Color based on severity
-                        let color;
-                        switch(finding.severity?.toLowerCase()) {
-                          case 'severe':
-                            color = 'border-red-500 bg-red-500';
-                            break;
-                          case 'moderate':
-                            color = 'border-yellow-500 bg-yellow-500';
-                            break;
-                          default:
-                            color = 'border-green-500 bg-green-500';
-                        }
-                        
-                        return (
-                          <div 
-                            key={index}
-                            className={`absolute w-6 h-6 rounded-full border-2 ${color} bg-opacity-50 animate-pulse-slow`}
-                            style={{ 
-                              top: position.top, 
-                              left: position.left,
-                              animationDelay: `${index * 0.2}s`
-                            }}
-                          ></div>
-                        );
-                      })}
-                    </div>
-                    
-                    <div className="mt-6">
-                      <h3 className="text-lg font-semibold mb-3">Image Information</h3>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-black bg-opacity-40 rounded-lg p-4">
-                          <p className="text-sm text-blue-300">Image Type</p>
-                          <p className="text-lg text-white">{analysisResult.imageType?.toUpperCase()}</p>
-                        </div>
-                        <div className="bg-black bg-opacity-40 rounded-lg p-4">
-                          <p className="text-sm text-blue-300">Analysis Date</p>
-                          <p className="text-lg text-white">{new Date(analysisResult.timestamp).toLocaleDateString()}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Analysis Details */}
-                  <div className="bg-black bg-opacity-40 rounded-lg p-6 border border-blue-800 h-fit">
-                    <h3 className="text-lg font-semibold mb-4">Analysis Findings</h3>
-                    
-                    <div className="space-y-6">
-                      {analysisResult.findings.map((finding, index) => {
-                        // Determine confidence score for this finding
-                        const confidenceScore = analysisResult.confidenceScores[finding.name] || 0;
-                        let confidenceColor;
-                        if (confidenceScore > 0.9) {
-                          confidenceColor = 'text-green-400';
-                        } else if (confidenceScore > 0.7) {
-                          confidenceColor = 'text-yellow-400';
-                        } else {
-                          confidenceColor = 'text-red-400';
-                        }
-                        
-                        return (
-                          <div key={index} className="pb-4 border-b border-blue-900">
-                            <div className="flex justify-between items-center mb-2">
-                              <h4 className="font-medium text-white">{finding.name}</h4>
-                              <span className={`${confidenceColor} font-semibold`}>
-                                {Math.round(confidenceScore * 100)}%
-                              </span>
-                            </div>
-                            
-                            <div className="mb-3">
-                              <div className="w-full bg-gray-800 rounded-full h-1.5">
-                                <div 
-                                  className={`h-1.5 rounded-full ${
-                                    confidenceScore > 0.9 ? 'bg-green-500' : 
-                                    confidenceScore > 0.7 ? 'bg-yellow-500' : 'bg-red-500'
-                                  }`} 
-                                  style={{width: `${confidenceScore * 100}%`}}
-                                ></div>
-                              </div>
-                            </div>
-                            
-                            <div className="grid grid-cols-2 gap-2 text-sm">
-                              <div>
-                                <p className="text-blue-400">Location</p>
-                                <p className="text-white">{finding.location || 'Not specified'}</p>
-                              </div>
-                              <div>
-                                <p className="text-blue-400">Severity</p>
-                                <p className="text-white">{finding.severity || 'Not specified'}</p>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    
-                    <div className="mt-6 pt-4 border-t border-blue-900">
-                      <h4 className="font-medium text-blue-300 mb-2">AI Recommendations</h4>
-                      <p className="text-sm text-white mb-4">
-                        {analysisResult.findings.length > 0 
-                          ? `Based on the ${analysisResult.findings[0].name} finding, we recommend follow-up with a specialist within 2 weeks.`
-                          : 'No significant findings detected. Routine follow-up recommended.'}
-                      </p>
-                      
-                      <div className="flex flex-col space-y-3 mt-6">
-                        <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-md hover:from-blue-700 hover:to-purple-700 transition duration-300 flex items-center justify-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                          </svg>
-                          Download Report
-                        </button>
-                        <button className="px-4 py-2 border border-blue-500 text-blue-400 rounded-md hover:bg-blue-900 hover:bg-opacity-30 transition duration-300 flex items-center justify-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                          </svg>
-                          Share with Doctor
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
+            )}
+            
+            {/* Image Upload Modal */}
+            {showUploadModal && (
+              <ImageUpload 
+                onClose={() => setShowUploadModal(false)}
+                onAnalysisComplete={(result) => {
+                  setAnalysisResult(result);
+                  setShowUploadModal(false);
+                }}
+              />
             )}
           </main>
           <MedicalDisclaimer position="bottom" />
