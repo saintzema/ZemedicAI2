@@ -5,6 +5,35 @@ import DashboardSidebar from './DashboardSidebar';
 import ImageUpload from './ImageUpload';
 import MedicalDisclaimer from './MedicalDisclaimer';
 
+// Dashboard sub-components
+const DashboardOverview = ({ user }) => (
+  <div>
+    <h2 className="text-xl font-semibold mb-4">Dashboard Overview</h2>
+    <p className="text-gray-300">Welcome back, {user?.first_name}! Here's your health overview.</p>
+  </div>
+);
+
+const DashboardAnalyses = ({ user }) => (
+  <div>
+    <h2 className="text-xl font-semibold mb-4">Your Analyses</h2>
+    <p className="text-gray-300">View your previous medical image analyses.</p>
+  </div>
+);
+
+const DashboardDoctors = ({ user }) => (
+  <div>
+    <h2 className="text-xl font-semibold mb-4">Your Doctors</h2>
+    <p className="text-gray-300">Manage your healthcare providers and share results.</p>
+  </div>
+);
+
+const DashboardSettings = ({ user }) => (
+  <div>
+    <h2 className="text-xl font-semibold mb-4">Account Settings</h2>
+    <p className="text-gray-300">Update your profile and preferences.</p>
+  </div>
+);
+
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const Dashboard = () => {
