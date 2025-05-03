@@ -1687,8 +1687,6 @@ function App() {
               <MedicalDisclaimer position="bottom" />
             </>
           } />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login setIsAuthenticated={() => {}} setUser={() => {}} />} />
           <Route path="/dashboard/*" element={
             <ProtectedRoute>
