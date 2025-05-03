@@ -1719,6 +1719,7 @@ function App() {
               <Navigation />
               <Pricing />
               <Footer />
+              <MedicalDisclaimer position="bottom" />
             </>
           } />
           <Route path="/hospital-integration" element={<HospitalIntegration />} />
