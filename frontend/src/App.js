@@ -1235,10 +1235,6 @@ const Footer = () => {
 };
 
 // Login Component is imported from './components/Login'
-                      </svg>
-                      Signing in...
-                    </>
-                  ) : "Sign In"}
                 </button>
               </div>
             </form>
