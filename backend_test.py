@@ -2,6 +2,7 @@
 import requests
 import sys
 import uuid
+import base64
 from datetime import datetime
 
 class ZemedicAITester:
