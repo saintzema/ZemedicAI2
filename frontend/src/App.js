@@ -1235,10 +1235,6 @@ const Footer = () => {
 };
 
 // Login Component is imported from './components/Login'
-                </button>
-              </div>
-            </form>
-          </div>
         </div>
       </div>
     </div>
