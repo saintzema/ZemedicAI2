@@ -196,6 +196,8 @@ def main():
         
         if login_success:
             tester.test_get_user_profile()
+            # Test Google Health API integration
+            tester.test_google_health_api()
         
         # Also test registration and login with new user
         register_success, _ = tester.test_register_user()
@@ -205,6 +207,8 @@ def main():
             
             if login_success:
                 tester.test_get_user_profile()
+                # Test Google Health API integration with new user
+                tester.test_google_health_api()
     
     # Print results
     print(f"\n📊 Tests Summary: {tester.tests_passed}/{tester.tests_run} tests passed")
