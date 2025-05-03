@@ -12,6 +12,8 @@ import HospitalIntegration from './components/solutions/HospitalIntegration';
 import SolarPoweredBooths from './components/solutions/SolarPoweredBooths';
 import MobileApplications from './components/solutions/MobileApplications';
 import Pricing from './components/Pricing';
+import Login from './components/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
