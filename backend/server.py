@@ -327,6 +327,37 @@ async def google_health_analyze(
 # Include the router in the main app
 app.include_router(api_router)
 
+# Create a test user on startup if it doesn't exist
+@app.on_event("startup")
+async def create_test_users():
+    # Create a test patient user
+    test_patient = await db.users.find_one({"email": "patient@example.com"})
+    if not test_patient:
+        hashed_password = get_password_hash("testpassword")
+        test_patient_obj = UserInDB(
+            email="patient@example.com",
+            first_name="Test",
+            last_name="Patient",
+            role=UserRole.PATIENT,
+            hashed_password=hashed_password
+        )
+        await db.users.insert_one(test_patient_obj.dict())
+        logger.info("Created test patient user")
+
+    # Create a test doctor user
+    test_doctor = await db.users.find_one({"email": "doctor@example.com"})
+    if not test_doctor:
+        hashed_password = get_password_hash("testpassword")
+        test_doctor_obj = UserInDB(
+            email="doctor@example.com",
+            first_name="Test",
+            last_name="Doctor",
+            role=UserRole.DOCTOR,
+            hashed_password=hashed_password
+        )
+        await db.users.insert_one(test_doctor_obj.dict())
+        logger.info("Created test doctor user")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
