@@ -94,7 +94,7 @@ const DashboardSupport = ({ user }) => {
       questions: [
         {
           question: 'How do I change my subscription plan?',
-          answer: 'You can change your subscription plan at any time by going to Dashboard > Subscription. There you'll find all available plans and can upgrade or downgrade as needed. Changes to your subscription will take effect at the start of your next billing cycle.'
+          answer: 'You can change your subscription plan at any time by going to Dashboard > Subscription. There you\'ll find all available plans and can upgrade or downgrade as needed. Changes to your subscription will take effect at the start of your next billing cycle.'
         },
         {
           question: 'Can I cancel my subscription?',
