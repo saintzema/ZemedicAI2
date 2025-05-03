@@ -160,6 +160,7 @@ const Navigation = () => {
             </div>
             
             <a href="#about" className="block py-2 text-blue-300 hover:text-white">About Us</a>
+            <Link to="/pricing" className="block py-2 text-blue-300 hover:text-white">Pricing</Link>
             <a href="#contact" className="block py-2 text-blue-300 hover:text-white">Contact</a>
             
             <div className="grid grid-cols-2 gap-3 pt-4 border-t border-blue-800">
