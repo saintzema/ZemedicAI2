@@ -1709,9 +1709,10 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard/*" element={
             <ProtectedRoute>
-              <Dashboard />
+              <NewDashboard />
             </ProtectedRoute>
           } />
+          <Route path="/pricing" element={<Pricing />}
           <Route path="/hospital-integration" element={<HospitalIntegration />} />
           {/* Public solution pages */}
           <Route path="/solutions/hospital-integration" element={<HospitalIntegration />} />
