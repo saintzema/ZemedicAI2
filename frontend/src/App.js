@@ -71,6 +71,9 @@ const Navigation = () => {
               <a href="#features" className="block px-4 py-2 hover:bg-blue-900 text-blue-300 hover:text-white">Offline Capabilities</a>
             </div>
           </div>
+          <Link to="/pricing" className="hover:text-blue-300 transition duration-300">
+            Pricing
+          </Link>
           <div className="relative group">
             <a href="#solutions" className="hover:text-blue-300 transition duration-300 flex items-center">
               Solutions
