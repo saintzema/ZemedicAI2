@@ -158,6 +158,29 @@ class ZemedicAITester:
         except Exception as e:
             print(f"❌ Failed - Error: {str(e)}")
             return False, {}
+            
+    def test_google_health_api(self):
+        """Test the Google Health API integration"""
+        if not self.token:
+            print("❌ Skipping Google Health API test - No authentication token")
+            return False, {}
+            
+        # Create a mock image data (base64 encoded string)
+        # In a real test, this would be an actual medical image
+        mock_image_data = base64.b64encode(b"mock_image_data").decode('utf-8')
+        
+        data = {
+            "image_type": "xray",
+            "image_data": mock_image_data
+        }
+        
+        return self.run_test(
+            "Google Health API Integration",
+            "POST",
+            "google-health/analyze",
+            200,
+            data=data
+        )
 
 def main():
     # Setup
