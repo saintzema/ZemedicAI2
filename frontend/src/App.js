@@ -1235,7 +1235,6 @@ const Footer = () => {
 };
 
 // Login Component is imported from './components/Login'
-};
 
 // Register Component
 const Register = () => {
