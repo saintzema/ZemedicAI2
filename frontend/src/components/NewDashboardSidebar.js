@@ -130,6 +130,9 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
     if (path === '/dashboard' && location.pathname === '/dashboard') {
       return true;
     }
+    if (path === '/dashboard' && location.pathname === '/dashboard/') {
+      return true;
+    }
     return location.pathname.startsWith(path) && path !== '/dashboard';
   };
   
