@@ -6,10 +6,12 @@ import TypingAnimation from './components/TypingAnimation';
 import AfricaMap from './components/AfricaMap';
 import MedicalDisclaimer from './components/MedicalDisclaimer';
 import Dashboard from './components/Dashboard';
+import NewDashboard from './components/NewDashboard';
 import ImageUpload from './components/ImageUpload';
 import HospitalIntegration from './components/solutions/HospitalIntegration';
 import SolarPoweredBooths from './components/solutions/SolarPoweredBooths';
 import MobileApplications from './components/solutions/MobileApplications';
+import Pricing from './components/Pricing';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
