@@ -1691,7 +1691,7 @@ function App() {
               <MedicalDisclaimer position="bottom" />
             </>
           } />
-          <Route path="/login" element={<Login setIsAuthenticated={() => {}} setUser={() => {}} />} />
+          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
           <Route path="/dashboard/*" element={
             <ProtectedRoute>
               <NewDashboard />
