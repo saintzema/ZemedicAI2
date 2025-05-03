@@ -130,45 +130,33 @@ class ZemedicAITester:
 
     def test_login_with_credentials(self, email, password):
         """Test login with specific credentials"""
-        # Use URLSearchParams format for login
+        # Use direct request with form data
+        url = f"{self.base_url}/token"
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        data = f"username={email}&password={password}"
+        data = {"username": email, "password": password}
         
-        success, response = self.run_test(
-            f"Login with {email}",
-            "POST",
-            "token",
-            200,
-            data=None,
-            headers=headers
-        )
-        
-        # Make a direct request since we need to send form data
-        if not success:
-            url = f"{self.base_url}/token"
-            try:
-                response = requests.post(
-                    url, 
-                    data=data,
-                    headers=headers
-                )
-                
-                if response.status_code == 200:
-                    self.tests_passed += 1
-                    print(f"✅ Passed - Status: {response.status_code}")
-                    response_data = response.json()
-                    self.token = response_data.get('access_token')
-                    return True, response_data
-                else:
-                    print(f"❌ Failed - Expected 200, got {response.status_code}")
+        try:
+            self.tests_run += 1
+            print(f"\n🔍 Testing Login with {email}...")
+            
+            response = requests.post(url, data=data, headers=headers)
+            
+            if response.status_code == 200:
+                self.tests_passed += 1
+                print(f"✅ Passed - Status: {response.status_code}")
+                response_data = response.json()
+                self.token = response_data.get('access_token')
+                return True, response_data
+            else:
+                print(f"❌ Failed - Expected 200, got {response.status_code}")
+                try:
+                    print(f"Response: {response.json()}")
+                except:
                     print(f"Response: {response.text}")
-                    return False, {}
-            except Exception as e:
-                print(f"❌ Failed - Error: {str(e)}")
                 return False, {}
-        
-        self.token = response.get('access_token')
-        return success, response
+        except Exception as e:
+            print(f"❌ Failed - Error: {str(e)}")
+            return False, {}
 
 def main():
     # Setup
