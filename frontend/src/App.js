@@ -1668,6 +1668,10 @@ const Partners = () => {
 
 // Main App Component
 function App() {
+  const [showPopup, setShowPopup] = useState(false);
+  const [showChallenge, setShowChallenge] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
 
   return (
     <div className="App">
