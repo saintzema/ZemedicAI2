@@ -1598,8 +1598,6 @@ function App() {
   const [showChallenge, setShowChallenge] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
 
   return (
     <div className="App">
