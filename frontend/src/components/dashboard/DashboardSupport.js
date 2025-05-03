@@ -106,7 +106,7 @@ const DashboardSupport = ({ user }) => {
         },
         {
           question: 'Do you offer refunds?',
-          answer: 'We offer a 30-day money-back guarantee for new subscriptions. If you're not satisfied with our service within the first 30 days, contact our support team for a full refund. After this period, refunds are considered on a case-by-case basis.'
+          answer: 'We offer a 30-day money-back guarantee for new subscriptions. If you\'re not satisfied with our service within the first 30 days, contact our support team for a full refund. After this period, refunds are considered on a case-by-case basis.'
         }
       ]
     },
