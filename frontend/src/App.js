@@ -1224,19 +1224,7 @@ const Footer = () => {
   );
 };
 
-// Login Component
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+// Login Component is imported from './components/Login'
     
     try {
       // Convert data to URLSearchParams for proper form encoding
