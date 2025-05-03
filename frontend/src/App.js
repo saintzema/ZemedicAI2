@@ -106,6 +106,7 @@ const Navigation = () => {
             </div>
           </div>
           <a href="#about" className="hover:text-blue-300 transition duration-300">About Us</a>
+          <Link to="/pricing" className="hover:text-blue-300 transition duration-300">Pricing</Link>
           <a href="#contact" className="hover:text-blue-300 transition duration-300">Contact</a>
         </div>
         
