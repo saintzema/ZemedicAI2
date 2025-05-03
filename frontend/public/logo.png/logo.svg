@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200">
+  <!-- Stylized Z with connected dots -->
+  <g fill="#6a11cb">
+    <circle cx="20" cy="20" r="5"/>
+    <circle cx="40" cy="40" r="5"/>
+    <circle cx="60" cy="10" r="5"/>
+    <circle cx="80" cy="30" r="5"/>
+    <circle cx="100" cy="20" r="5"/>
+    <circle cx="120" cy="40" r="5"/>
+    <circle cx="20" cy="80" r="5"/>
+    <circle cx="40" cy="100" r="5"/>
+    <circle cx="60" cy="120" r="5"/>
+    <circle cx="80" cy="140" r="5"/>
+    <circle cx="100" cy="160" r="5"/>
+    <circle cx="120" cy="180" r="5"/>
+    <circle cx="140" cy="160" r="5"/>
+    <circle cx="160" cy="140" r="5"/>
+    
+    <!-- Lines connecting dots -->
+    <line x1="20" y1="20" x2="40" y2="40" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="40" y1="40" x2="60" y2="10" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="60" y1="10" x2="80" y2="30" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="80" y1="30" x2="100" y2="20" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="100" y1="20" x2="120" y2="40" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="120" y1="40" x2="20" y2="80" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="20" y1="80" x2="40" y2="100" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="40" y1="100" x2="60" y2="120" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="60" y1="120" x2="80" y2="140" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="80" y1="140" x2="100" y2="160" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="100" y1="160" x2="120" y2="180" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="120" y1="180" x2="140" y2="160" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="140" y1="160" x2="160" y2="140" stroke="#6a11cb" stroke-width="2"/>
+    
+    <!-- Additional connections to form a Z shape -->
+    <line x1="20" y1="20" x2="120" y2="40" stroke="#6a11cb" stroke-width="2"/>
+    <line x1="20" y1="80" x2="120" y2="180" stroke="#6a11cb" stroke-width="2"/>
+  </g>
+  
+  <!-- Healthcare symbol -->
+  <g transform="translate(380, 100) scale(0.8)">
+    <!-- Circle -->
+    <circle cx="0" cy="0" r="30" fill="none" stroke="#6a11cb" stroke-width="3"/>
+    
+    <!-- Medical cross -->
+    <rect x="-10" y="-25" width="20" height="50" fill="#6a11cb"/>
+    <rect x="-25" y="-10" width="50" height="20" fill="#6a11cb"/>
+    
+    <!-- Green leaf/curved element -->
+    <path d="M-15,5 C-5,15 15,15 25,0" fill="none" stroke="#4CAF50" stroke-width="3"/>
+  </g>
+</svg>
