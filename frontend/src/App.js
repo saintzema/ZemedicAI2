@@ -1235,13 +1235,6 @@ const Footer = () => {
 };
 
 // Login Component is imported from './components/Login'
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-700 rounded" 
-                  />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-blue-300">Remember me</label>
-                </div>
                 
                 <div className="text-sm">
                   <a href="#" className="font-medium text-blue-400 hover:text-blue-200">Forgot your password?</a>
