@@ -1235,10 +1235,6 @@ const Footer = () => {
 };
 
 // Login Component is imported from './components/Login'
-                
-                <div className="text-sm">
-                  <a href="#" className="font-medium text-blue-400 hover:text-blue-200">Forgot your password?</a>
-                </div>
               </div>
               
               <div>
