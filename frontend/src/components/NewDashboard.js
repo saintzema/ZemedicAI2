@@ -320,17 +320,17 @@ const NewDashboard = () => {
         {/* Main Content Area */}
         <div className="py-6 px-4 sm:px-6 lg:px-8">
           <Routes>
-            <Route path="/" element={<DashboardOverview user={user} setShowUploadModal={setShowUploadModal} />} />
-            <Route path="/analyses" element={<DashboardAnalyses user={user} />} />
-            <Route path="/history" element={<DashboardHistory user={user} />} />
-            <Route path="/doctors" element={<DashboardDoctors user={user} />} />
-            <Route path="/patients" element={<DashboardPatients user={user} />} />
-            <Route path="/records" element={<DashboardRecords user={user} />} />
-            <Route path="/subscription" element={<DashboardSubscription user={user} />} />
-            <Route path="/settings" element={<DashboardSettings user={user} />} />
-            <Route path="/profile" element={<DashboardProfile user={user} />} />
-            <Route path="/support" element={<DashboardSupport user={user} />} />
-            <Route path="/ai-training" element={<DashboardAITraining user={user} />} />
+            <Route index element={<DashboardOverview user={user} setShowUploadModal={setShowUploadModal} />} />
+            <Route path="analyses" element={<DashboardAnalyses user={user} />} />
+            <Route path="history" element={<DashboardHistory user={user} />} />
+            <Route path="doctors" element={<DashboardDoctors user={user} />} />
+            <Route path="patients" element={<DashboardPatients user={user} />} />
+            <Route path="records" element={<DashboardRecords user={user} />} />
+            <Route path="subscription" element={<DashboardSubscription user={user} />} />
+            <Route path="settings" element={<DashboardSettings user={user} />} />
+            <Route path="profile" element={<DashboardProfile user={user} />} />
+            <Route path="support" element={<DashboardSupport user={user} />} />
+            <Route path="ai-training" element={<DashboardAITraining user={user} />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </div>
