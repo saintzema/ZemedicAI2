@@ -1689,7 +1689,12 @@ function App() {
           } />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard/*" element={<NewDashboard />} />
+          <Route path="/login" element={<Login setIsAuthenticated={() => {}} setUser={() => {}} />} />
+          <Route path="/dashboard/*" element={
+            <ProtectedRoute>
+              <NewDashboard />
+            </ProtectedRoute>
+          } />
           <Route path="/pricing" element={
             <>
               <Navigation />
