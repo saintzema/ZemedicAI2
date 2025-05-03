@@ -1714,7 +1714,13 @@ function App() {
               <NewDashboard />
             </ProtectedRoute>
           } />
-          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/pricing" element={
+            <>
+              <Navigation />
+              <Pricing />
+              <Footer />
+            </>
+          } />
           <Route path="/hospital-integration" element={<HospitalIntegration />} />
           {/* Public solution pages */}
           <Route path="/solutions/hospital-integration" element={<HospitalIntegration />} />
