@@ -98,7 +98,7 @@ const DashboardSupport = ({ user }) => {
         },
         {
           question: 'Can I cancel my subscription?',
-          answer: 'Yes, you can cancel your subscription at any time from your Dashboard > Subscription page. If you cancel, you'll continue to have access to your current plan's features until the end of your current billing period.'
+          answer: 'Yes, you can cancel your subscription at any time from your Dashboard > Subscription page. If you cancel, you\'ll continue to have access to your current plan\'s features until the end of your current billing period.'
         },
         {
           question: 'How do I update my payment information?',
