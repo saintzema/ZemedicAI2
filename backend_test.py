@@ -5,7 +5,7 @@ import uuid
 from datetime import datetime
 
 class ZemedicAITester:
-    def __init__(self, base_url="https://b8f774b4-d606-46d0-bc66-bfa35c307be1.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://823c2069-2f6b-40f3-b77b-6681c63eb466.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.tests_run = 0
