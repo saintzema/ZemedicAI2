@@ -14,6 +14,8 @@ import MobileApplications from './components/solutions/MobileApplications';
 import Pricing from './components/Pricing';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
+import Login from './components/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -71,6 +73,9 @@ const Navigation = () => {
               <a href="#features" className="block px-4 py-2 hover:bg-blue-900 text-blue-300 hover:text-white">Offline Capabilities</a>
             </div>
           </div>
+          <Link to="/pricing" className="hover:text-blue-300 transition duration-300">
+            Pricing
+          </Link>
           <Link to="/pricing" className="hover:text-blue-300 transition duration-300">
             Pricing
           </Link>
@@ -1589,6 +1594,8 @@ const Partners = () => {
 function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [showChallenge, setShowChallenge] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
 

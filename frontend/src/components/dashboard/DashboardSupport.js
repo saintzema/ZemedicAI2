@@ -94,11 +94,11 @@ const DashboardSupport = ({ user }) => {
       questions: [
         {
           question: 'How do I change my subscription plan?',
-          answer: 'You can change your subscription plan at any time by going to Dashboard > Subscription. There you\'ll find all available plans and can upgrade or downgrade as needed. Changes to your subscription will take effect at the start of your next billing cycle.'
+          answer: 'You can change your subscription plan at any time by going to Dashboard > Subscription. There you'll find all available plans and can upgrade or downgrade as needed. Changes to your subscription will take effect at the start of your next billing cycle.'
         },
         {
           question: 'Can I cancel my subscription?',
-          answer: 'Yes, you can cancel your subscription at any time from your Dashboard > Subscription page. If you cancel, you\'ll continue to have access to your current plan\'s features until the end of your current billing period.'
+          answer: 'Yes, you can cancel your subscription at any time from your Dashboard > Subscription page. If you cancel, you'll continue to have access to your current plan's features until the end of your current billing period.'
         },
         {
           question: 'How do I update my payment information?',
@@ -106,7 +106,7 @@ const DashboardSupport = ({ user }) => {
         },
         {
           question: 'Do you offer refunds?',
-          answer: 'We offer a 30-day money-back guarantee for new subscriptions. If you\'re not satisfied with our service within the first 30 days, contact our support team for a full refund. After this period, refunds are considered on a case-by-case basis.'
+          answer: 'We offer a 30-day money-back guarantee for new subscriptions. If you're not satisfied with our service within the first 30 days, contact our support team for a full refund. After this period, refunds are considered on a case-by-case basis.'
         }
       ]
     },

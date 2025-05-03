@@ -290,7 +290,7 @@ const DashboardRecords = ({ user }) => {
                     <div>
                       <h3 className="text-lg font-medium text-white">{record.title}</h3>
                       <p className="text-gray-400 text-sm">
-                        {formatDate(record.date)} • {record.facility}
+                        {formatDate(record.date)} â¢ {record.facility}
                       </p>
                     </div>
                   </div>
