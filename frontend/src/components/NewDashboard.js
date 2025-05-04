@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Link, Navigate } from 'react-router-dom';
+import axios from 'axios';
 
 // Import dashboard components
 import NewDashboardSidebar from './NewDashboardSidebar';
+import APIKeyModal from './APIKeyModal';
 import DashboardOverview from './dashboard/DashboardOverview';
 import DashboardAnalyses from './dashboard/DashboardAnalyses';
 import DashboardHistory from './dashboard/DashboardHistory';
