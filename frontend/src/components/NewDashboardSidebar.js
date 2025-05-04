@@ -65,7 +65,7 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
       ),
-      role: 'patient'
+      role: 'all'
     },
     {
       name: 'AI Training',
@@ -141,8 +141,9 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black bg-opacity-75 md:hidden"
+          className="fixed inset-0 z-40 bg-black bg-opacity-75 md:hidden" 
           onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
         ></div>
       )}
       
@@ -154,16 +155,17 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
       >
         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-700">
           <Link to="/" className="flex items-center">
-            <img
-              className="h-8 w-auto"
-              src="/logo.png"
-              alt="ZemedicAI"
+            <img 
+              className="h-8 w-auto" 
+              src="/images/logo.svg" 
+              alt="ZemedicAI" 
             />
             <span className="ml-2 text-white text-lg font-bold">ZemedicAI</span>
           </Link>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="text-gray-300 hover:text-white"
+            className="text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Close sidebar"
           >
             <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -171,19 +173,19 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
           </button>
         </div>
         
-        <div className="flex-1 overflow-y-auto">
-          <nav className="px-2 py-4 space-y-1">
+        <div className="flex-1 overflow-y-auto pt-2 pb-4">
+          <nav className="px-2 space-y-1">
             {filteredNavigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`flex items-center px-3 py-2 text-base font-medium rounded-md ${
+                className={`flex items-center px-3 py-2 text-base font-medium rounded-md group transition-colors duration-200 ${
                   isLinkActive(item.path)
                     ? 'bg-gray-900 text-white'
                     : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                 }`}
               >
-                <div className={`mr-3 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400'}`}>
+                <div className={`mr-3 flex-shrink-0 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400 group-hover:text-gray-300'}`}>
                   {item.icon}
                 </div>
                 {item.name}
@@ -191,7 +193,7 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
             ))}
           </nav>
           
-          <div className="px-2 py-4 border-t border-gray-700">
+          <div className="mt-8 px-2">
             <h3 className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
               Your Account
             </h3>
@@ -200,13 +202,13 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`flex items-center px-3 py-2 text-base font-medium rounded-md ${
+                  className={`flex items-center px-3 py-2 text-base font-medium rounded-md group transition-colors duration-200 ${
                     isLinkActive(item.path)
                       ? 'bg-gray-900 text-white'
                       : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                   }`}
                 >
-                  <div className={`mr-3 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400'}`}>
+                  <div className={`mr-3 flex-shrink-0 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400 group-hover:text-gray-300'}`}>
                     {item.icon}
                   </div>
                   {item.name}
@@ -216,41 +218,50 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
           </div>
         </div>
         
-        <div className="flex items-center p-4 border-t border-gray-700">
-          <button className="w-full px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-500 rounded-md transition-colors">
+        <div className="p-4 border-t border-gray-700">
+          <button 
+            onClick={() => {
+              localStorage.removeItem('token');
+              window.location.href = '/login';
+            }}
+            className="w-full flex items-center justify-center px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors duration-200"
+          >
+            <svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
             Sign Out
           </button>
         </div>
       </div>
       
       {/* Sidebar for desktop */}
-      <div className={`md:flex md:flex-shrink-0 ${sidebarOpen ? 'flex' : 'hidden'}`}>
+      <div className="hidden md:flex md:flex-shrink-0">
         <div className="flex flex-col w-64">
           <div className="flex flex-col h-0 flex-1 bg-gray-800">
             <div className="flex items-center h-16 px-4 border-b border-gray-700">
               <Link to="/" className="flex items-center">
-                <img
-                  className="h-8 w-auto"
-                  src="/logo.png"
-                  alt="ZemedicAI"
+                <img 
+                  className="h-8 w-auto" 
+                  src="/images/logo.svg" 
+                  alt="ZemedicAI" 
                 />
                 <span className="ml-2 text-white text-lg font-bold">ZemedicAI</span>
               </Link>
             </div>
             
-            <div className="flex-1 overflow-y-auto">
-              <nav className="px-2 py-4 space-y-1">
+            <div className="flex-1 overflow-y-auto pt-5 pb-4">
+              <nav className="px-2 space-y-1">
                 {filteredNavigation.map((item) => (
                   <Link
                     key={item.name}
                     to={item.path}
-                    className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                    className={`flex items-center px-3 py-2 text-sm font-medium rounded-md group transition-colors duration-200 ${
                       isLinkActive(item.path)
                         ? 'bg-gray-900 text-white'
                         : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                     }`}
                   >
-                    <div className={`mr-3 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400'}`}>
+                    <div className={`mr-3 flex-shrink-0 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400 group-hover:text-gray-300'}`}>
                       {item.icon}
                     </div>
                     {item.name}
@@ -258,7 +269,7 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
                 ))}
               </nav>
               
-              <div className="px-2 py-4 border-t border-gray-700">
+              <div className="mt-8 px-2">
                 <h3 className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                   Your Account
                 </h3>
@@ -267,13 +278,13 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
                     <Link
                       key={item.name}
                       to={item.path}
-                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md group transition-colors duration-200 ${
                         isLinkActive(item.path)
                           ? 'bg-gray-900 text-white'
                           : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                       }`}
                     >
-                      <div className={`mr-3 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400'}`}>
+                      <div className={`mr-3 flex-shrink-0 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400 group-hover:text-gray-300'}`}>
                         {item.icon}
                       </div>
                       {item.name}
@@ -283,8 +294,17 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
               </div>
             </div>
             
-            <div className="flex items-center p-4 border-t border-gray-700">
-              <button className="w-full px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-500 rounded-md transition-colors">
+            <div className="p-4 border-t border-gray-700">
+              <button 
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  window.location.href = '/login';
+                }}
+                className="w-full flex items-center justify-center px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors duration-200"
+              >
+                <svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
                 Sign Out
               </button>
             </div>
