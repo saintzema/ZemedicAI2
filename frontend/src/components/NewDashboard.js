@@ -361,8 +361,15 @@ const NewDashboard = () => {
       
       {/* Upload Modal */}
       {showUploadModal && (
-        <ImageUpload setShowModal={setShowUploadModal} />
+        <ImageUpload setShowModal={setShowUploadModal} apiKey={apiKey} />
       )}
+      
+      {/* API Key Modal */}
+      <APIKeyModal 
+        isOpen={showApiKeyModal} 
+        onClose={() => setShowApiKeyModal(false)} 
+        onSave={(key) => setApiKey(key)}
+      />
     </div>
   );
 };
