@@ -155,7 +155,7 @@ const Navigation = () => {
               <Link to="/register" className="px-4 py-2 text-center rounded-md bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition duration-300 shadow-md text-sm">Sign Up</Link>
             </div>
             <div className="pt-3">
-              <Link to="/new-dashboard" className="block py-2 text-center text-white bg-blue-600 hover:bg-blue-700 rounded-md">New Dashboard</Link>
+              <Link to="/dashboard" className="block py-2 text-center text-white bg-blue-600 hover:bg-blue-700 rounded-md">Dashboard</Link>
             </div>
           </div>
         </div>
