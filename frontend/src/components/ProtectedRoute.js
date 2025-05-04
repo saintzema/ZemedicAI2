@@ -1,65 +1,72 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
 const ProtectedRoute = ({ children }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
-
+  
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('token');
+      // Check for token in localStorage or sessionStorage
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       
       if (!token) {
         setIsAuthenticated(false);
-        setIsLoading(false);
+        setLoading(false);
         return;
       }
-
+      
+      // If it's a demo token, we'll skip the validation
+      if (token.startsWith('demo-token')) {
+        setIsAuthenticated(true);
+        setLoading(false);
+        return;
+      }
+      
       try {
-        // Access the backend URL from environment variable
-        const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-        
-        // Validate token by fetching user profile
-        await axios.get(`${backendUrl}/api/users/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+        // Verify token with backend
+        await axios.get(`${API}/auth/verify`, {
+          headers: { Authorization: `Bearer ${token}` }
         });
         
         setIsAuthenticated(true);
       } catch (error) {
-        console.error('Auth check error:', error);
-        // Token is invalid or expired
+        console.error('Token validation error:', error);
+        
+        // Clear invalid token
         localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
+        
         setIsAuthenticated(false);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
-
+    
     checkAuth();
   }, []);
-
-  if (isLoading) {
-    // Show loading spinner while checking authentication
+  
+  if (loading) {
+    // Loading state
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="h-screen flex items-center justify-center bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-xl text-white">Authenticating...</p>
+        </div>
       </div>
     );
   }
-
-  // For demo purposes, temporarily bypass authentication check
-  // Comment this out when real authentication is needed
-  return children;
-
+  
   if (!isAuthenticated) {
     // Redirect to login if not authenticated
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-
+  
   // Render children if authenticated
   return children;
 };
