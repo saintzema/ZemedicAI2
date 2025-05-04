@@ -18,12 +18,16 @@ import DashboardSupport from './dashboard/DashboardSupport';
 import DashboardAITraining from './dashboard/DashboardAITraining';
 import ImageUpload from './ImageUpload';
 
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
 const NewDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   const [apiKey, setApiKey] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   // Check if API key is already stored
   useEffect(() => {
@@ -31,15 +35,52 @@ const NewDashboard = () => {
     if (storedApiKey) {
       setApiKey(storedApiKey);
     }
+    
+    // Fetch user data from backend (or use demo user if token doesn't exist)
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        
+        if (token) {
+          try {
+            const response = await axios.get(`${API}/users/me`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            setUser(response.data);
+          } catch (err) {
+            console.error("Failed to fetch user data:", err);
+            // Use demo data if API call fails
+            setUser(getDemoUser());
+          }
+        } else {
+          // Use demo data if no token exists
+          setUser(getDemoUser());
+        }
+        
+        setLoading(false);
+      } catch (err) {
+        console.error("Error loading user data:", err);
+        setError("Failed to load user data. Please try refreshing the page.");
+        setLoading(false);
+      }
+    };
+    
+    fetchUserData();
   }, []);
-  const [user, setUser] = useState({
+  
+  // Demo user data
+  const getDemoUser = () => ({
     id: 'user-1',
     first_name: 'John',
     last_name: 'Doe',
     email: 'john.doe@example.com',
     role: 'patient', // 'patient' or 'doctor'
-    avatar: '/images/avatar-placeholder.jpg'
+    avatar: '/images/avatar-placeholder.jpg',
+    created_at: new Date().toISOString()
   });
+  
+  const [user, setUser] = useState(getDemoUser());
+  
   const [notifications, setNotifications] = useState([
     {
       id: 'notif-1',
@@ -172,6 +213,37 @@ const NewDashboard = () => {
     }));
   };
   
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-xl text-white">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gray-900">
+        <div className="max-w-md p-8 bg-gray-800 rounded-lg shadow-lg text-center">
+          <svg className="h-16 w-16 text-red-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <h2 className="text-2xl font-bold text-white mb-4">Error</h2>
+          <p className="text-gray-300 mb-6">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          >
+            Refresh Page
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="h-screen flex overflow-hidden bg-gray-900">
       {/* Sidebar */}
@@ -182,7 +254,7 @@ const NewDashboard = () => {
       />
       
       {/* Main Content */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Navigation */}
         <div className="sticky top-0 z-10 flex-shrink-0 h-16 bg-gray-800 shadow-md border-b border-gray-700">
           <div className="flex items-center justify-between px-4 h-full">
@@ -190,8 +262,9 @@ const NewDashboard = () => {
             <div className="flex items-center space-x-4">
               <button
                 type="button"
-                className="text-gray-300 hover:text-white focus:outline-none"
+                className="text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 md:hidden"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
+                aria-label="Open sidebar"
               >
                 <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -202,18 +275,22 @@ const NewDashboard = () => {
               <nav className="flex" aria-label="Breadcrumb">
                 <ol className="flex items-center space-x-2">
                   <li>
-                    <Link to="/dashboard" className="text-gray-400 hover:text-gray-300">
+                    <Link to="/dashboard" className="text-gray-400 hover:text-gray-300 transition-colors">
                       Dashboard
                     </Link>
                   </li>
-                  <li>
-                    <svg className="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </li>
-                  <li>
-                    <span className="text-gray-300 font-medium">{getCurrentSection()}</span>
-                  </li>
+                  {getCurrentSection() !== 'Overview' && (
+                    <>
+                      <li>
+                        <svg className="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </li>
+                      <li>
+                        <span className="text-gray-300 font-medium">{getCurrentSection()}</span>
+                      </li>
+                    </>
+                  )}
                 </ol>
               </nav>
             </div>
@@ -224,6 +301,7 @@ const NewDashboard = () => {
               <button
                 onClick={() => setShowApiKeyModal(true)}
                 className="flex items-center text-sm text-white bg-green-600 hover:bg-green-500 px-3 py-2 rounded-md transition-colors"
+                aria-label="API Key settings"
               >
                 <svg className="h-5 w-5 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
@@ -235,6 +313,7 @@ const NewDashboard = () => {
               <button
                 onClick={() => setShowUploadModal(true)}
                 className="flex items-center text-sm text-white bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded-md transition-colors"
+                aria-label="Upload scan"
               >
                 <svg className="h-5 w-5 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -246,7 +325,8 @@ const NewDashboard = () => {
               <div className="relative">
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="p-2 rounded-full text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none"
+                  className="p-2 rounded-full text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  aria-label={`Notifications (${unreadNotificationsCount} unread)`}
                 >
                   <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -282,14 +362,14 @@ const NewDashboard = () => {
                           {notifications.map(notification => (
                             <div 
                               key={notification.id} 
-                              className={`p-4 hover:bg-gray-750 ${!notification.read ? 'bg-gray-750' : ''}`}
+                              className={`p-4 hover:bg-gray-750 ${!notification.read ? 'bg-gray-750' : ''} cursor-pointer`}
                               onClick={() => markAsRead(notification.id)}
                             >
                               <div className="flex">
                                 <div className="flex-shrink-0 mr-3">
                                   {getNotificationIcon(notification.type)}
                                 </div>
-                                <div>
+                                <div className="flex-1">
                                   <p className="text-sm font-medium text-white">{notification.title}</p>
                                   <p className="text-sm text-gray-400 mt-0.5">{notification.message}</p>
                                   <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
@@ -316,59 +396,81 @@ const NewDashboard = () => {
               
               {/* User menu */}
               <div className="relative inline-block text-left">
-                <button className="flex items-center space-x-2 focus:outline-none">
+                <div className="flex items-center space-x-2">
                   <img
-                    className="h-8 w-8 rounded-full object-cover"
+                    className="h-8 w-8 rounded-full object-cover border border-gray-700"
                     src={user.avatar || '/images/avatar-placeholder.jpg'}
                     alt={`${user.first_name} ${user.last_name}`}
                   />
                   <div className="hidden md:block text-left">
                     <div className="text-sm font-medium text-white">{user.first_name} {user.last_name}</div>
-                    <div className="text-xs text-gray-400">{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</div>
+                    <div className="text-xs text-gray-400">{user.role === 'doctor' ? 'Doctor' : 'Patient'}</div>
                   </div>
-                </button>
-                
-                {/* Role toggle button - for testing only */}
-                <button 
-                  onClick={toggleUserRole}
-                  className="ml-3 p-1 bg-gray-700 text-xs text-gray-300 rounded hover:bg-gray-600"
-                >
-                  Switch to {user.role === 'patient' ? 'Doctor' : 'Patient'}
-                </button>
+                  
+                  {/* Role toggle button - for testing only */}
+                  <button 
+                    onClick={toggleUserRole}
+                    className="ml-3 p-1 bg-gray-700 text-xs text-gray-300 rounded hover:bg-gray-600 transition-colors"
+                    aria-label={`Switch to ${user.role === 'patient' ? 'doctor' : 'patient'} view`}
+                  >
+                    Switch to {user.role === 'patient' ? 'Doctor' : 'Patient'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
         
         {/* Main Content Area */}
-        <div className="py-6 px-4 sm:px-6 lg:px-8">
-          <Routes>
-            <Route index element={<DashboardOverview user={user} setShowUploadModal={setShowUploadModal} />} />
-            <Route path="analyses" element={<DashboardAnalyses user={user} />} />
-            <Route path="history" element={<DashboardHistory user={user} />} />
-            <Route path="doctors" element={<DashboardDoctors user={user} />} />
-            <Route path="patients" element={<DashboardPatients user={user} />} />
-            <Route path="records" element={<DashboardRecords user={user} />} />
-            <Route path="subscription" element={<DashboardSubscription user={user} />} />
-            <Route path="settings" element={<DashboardSettings user={user} />} />
-            <Route path="profile" element={<DashboardProfile user={user} />} />
-            <Route path="support" element={<DashboardSupport user={user} />} />
-            <Route path="ai-training" element={<DashboardAITraining user={user} />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
+        <div className="flex-1 overflow-y-auto bg-gray-900">
+          <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <Routes>
+              <Route index element={<DashboardOverview user={user} setShowUploadModal={setShowUploadModal} />} />
+              <Route path="analyses" element={<DashboardAnalyses user={user} />} />
+              <Route path="history" element={<DashboardHistory user={user} />} />
+              <Route path="doctors" element={<DashboardDoctors user={user} />} />
+              <Route path="patients" element={<DashboardPatients user={user} />} />
+              <Route path="records" element={<DashboardRecords user={user} />} />
+              <Route path="subscription" element={<DashboardSubscription user={user} />} />
+              <Route path="settings" element={<DashboardSettings user={user} />} />
+              <Route path="profile" element={<DashboardProfile user={user} />} />
+              <Route path="support" element={<DashboardSupport user={user} />} />
+              <Route path="ai-training" element={<DashboardAITraining user={user} />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </div>
         </div>
       </div>
       
       {/* Upload Modal */}
       {showUploadModal && (
-        <ImageUpload setShowModal={setShowUploadModal} apiKey={apiKey} />
+        <div className="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center p-4 bg-black bg-opacity-75">
+          <div className="relative max-w-4xl w-full mx-auto">
+            <button
+              onClick={() => setShowUploadModal(false)}
+              className="absolute top-2 right-2 p-2 text-gray-300 hover:text-white z-50"
+              aria-label="Close upload modal"
+            >
+              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <ImageUpload 
+              setShowModal={setShowUploadModal} 
+              apiKey={apiKey} 
+            />
+          </div>
+        </div>
       )}
       
       {/* API Key Modal */}
       <APIKeyModal 
         isOpen={showApiKeyModal} 
         onClose={() => setShowApiKeyModal(false)} 
-        onSave={(key) => setApiKey(key)}
+        onSave={(key) => {
+          setApiKey(key);
+          setShowApiKeyModal(false);
+        }}
       />
     </div>
   );
