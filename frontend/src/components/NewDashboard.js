@@ -220,6 +220,17 @@ const NewDashboard = () => {
             
             {/* Right side buttons */}
             <div className="flex items-center space-x-2">
+              {/* API Key button */}
+              <button
+                onClick={() => setShowApiKeyModal(true)}
+                className="flex items-center text-sm text-white bg-green-600 hover:bg-green-500 px-3 py-2 rounded-md transition-colors"
+              >
+                <svg className="h-5 w-5 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                </svg>
+                <span className="hidden sm:inline">API Key</span>
+              </button>
+              
               {/* Upload button */}
               <button
                 onClick={() => setShowUploadModal(true)}
