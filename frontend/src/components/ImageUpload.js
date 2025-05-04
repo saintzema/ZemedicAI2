@@ -89,37 +89,36 @@ const ImageUpload = ({ setShowModal, apiKey }) => {
     
     setUploading(true);
     setError('');
-    setUploadStep(2); // Move to analysis step
+    
+    // Create form data
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', imageType);
     
     try {
-      // Create a FormData object
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('imageType', imageType);
-      
       // Get token from localStorage
       const token = localStorage.getItem('token');
       
-      if (!token) {
-        throw new Error('Authentication token not found');
+      // Prepare the endpoint based on whether we're using Google Health API
+      let endpoint = `${API}/upload-image`;
+      
+      if (usingGoogleAPI && apiKey) {
+        endpoint = `${API}/google-health/analyze`;
+        // Add API key to headers if using Google API
+        formData.append('api_key', apiKey);
       }
       
       // Upload the file
-      const response = await axios.post(`${API}/upload-image`, formData, {
+      const response = await axios.post(endpoint, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
+          'Authorization': token ? `Bearer ${token}` : undefined
         }
       });
       
       // Process response
       setAnalysisResult(response.data);
       setUploadStep(3); // Move to results step
-      
-      // Call the callback with the analysis result
-      if (onUploadComplete) {
-        onUploadComplete(response.data);
-      }
       
     } catch (err) {
       console.error('Upload error:', err);
