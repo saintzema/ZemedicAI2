@@ -224,7 +224,7 @@ const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
       </div>
       
       {/* Sidebar for desktop */}
-      <div className="hidden md:flex md:flex-shrink-0">
+      <div className={`md:flex md:flex-shrink-0 ${sidebarOpen ? 'flex' : 'hidden'}`}>
         <div className="flex flex-col w-64">
           <div className="flex flex-col h-0 flex-1 bg-gray-800">
             <div className="flex items-center h-16 px-4 border-b border-gray-700">
