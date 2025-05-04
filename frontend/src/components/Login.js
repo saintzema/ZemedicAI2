@@ -1,222 +1,237 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
-const Login = ({ setIsAuthenticated, setUser }) => {
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+const Login = ({ setIsLoggedIn }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-
+  
+  // Check if user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
+    
     try {
-      // Access the backend URL from environment variable
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-      
-      // Make the login request
-      const formData = new URLSearchParams();
-      formData.append('username', email);
-      formData.append('password', password);
-
-      const response = await axios.post(`${backendUrl}/api/token`, formData, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
+      // Attempt to login with backend
+      const response = await axios.post(`${API}/auth/login`, {
+        email,
+        password
       });
-
-      if (response.data && response.data.access_token) {
-        // Save token to localStorage
-        localStorage.setItem('token', response.data.access_token);
-        
-        // Get user profile
-        const userResponse = await axios.get(`${backendUrl}/api/users/me`, {
-          headers: {
-            'Authorization': `Bearer ${response.data.access_token}`
-          }
-        });
-
-        // Set authenticated state
-        setIsAuthenticated(true);
-        
-        // Set user information
-        setUser(userResponse.data);
-
-        // Navigate to dashboard
-        navigate('/dashboard');
+      
+      // Store token
+      const token = response.data.access_token;
+      if (rememberMe) {
+        localStorage.setItem('token', token);
+      } else {
+        sessionStorage.setItem('token', token);
       }
+      
+      setIsLoggedIn(true);
+      navigate('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
-      setError(
-        err.response?.data?.detail || 
-        'Login failed. Please check your credentials and try again.'
-      );
-    } finally {
+      if (err.response?.status === 401) {
+        setError('Invalid email or password');
+      } else {
+        setError('Failed to login. Please try again.');
+      }
       setLoading(false);
     }
   };
-
-  // Option to pre-fill credentials for demo purposes
-  const fillDemoCredentials = (role) => {
-    if (role === 'patient') {
-      setEmail('patient@example.com');
-      setPassword('testpassword');
-    } else if (role === 'doctor') {
-      setEmail('doctor@example.com');
-      setPassword('testpassword');
-    }
+  
+  // Handle demo account login
+  const loginWithDemoAccount = (role) => {
+    setLoading(true);
+    
+    // Simulate a token for the demo account
+    const demoToken = `demo-token-${role}-${Date.now()}`;
+    localStorage.setItem('token', demoToken);
+    
+    // Store user role for demo
+    localStorage.setItem('demoUserRole', role);
+    
+    // Update auth state and redirect
+    setIsLoggedIn(true);
+    navigate('/dashboard');
   };
-
+  
   return (
-    <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Link to="/">
-          <img
-            className="mx-auto h-16 w-auto"
-            src="/logo.png"
-            alt="ZemedicAI"
-          />
-        </Link>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
-          Sign in to your account
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-400">
-          Or{' '}
-          <Link to="#" className="font-medium text-blue-400 hover:text-blue-300">
-            start your 14-day free trial
+    <div className="min-h-screen flex flex-col bg-gray-900">
+      {/* Header/Navigation */}
+      <header className="bg-gray-800 border-b border-gray-700 py-4">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <Link to="/" className="flex items-center">
+            <img className="h-10 w-auto" src="/images/logo.svg" alt="ZemedicAI" />
+            <span className="ml-2 text-white text-xl font-bold">ZemedicAI</span>
           </Link>
-        </p>
-      </div>
-
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white sm:text-sm"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-                Password
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white sm:text-sm"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 rounded bg-gray-700"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-300">
-                  Remember me
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <Link to="#" className="font-medium text-blue-400 hover:text-blue-300">
-                  Forgot your password?
-                </Link>
-              </div>
-            </div>
-
+          <nav>
+            <Link to="/" className="text-blue-300 hover:text-white transition-colors duration-200">
+              Back to Home
+            </Link>
+          </nav>
+        </div>
+      </header>
+      
+      {/* Main Content */}
+      <div className="flex-grow flex items-center justify-center px-4 py-12">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-extrabold text-white">Sign in to your account</h1>
+            <p className="mt-2 text-sm text-gray-400">
+              Or{' '}
+              <Link to="/signup" className="font-medium text-blue-400 hover:text-blue-300">
+                create a new account
+              </Link>
+            </p>
+          </div>
+          
+          <div className="mt-8 bg-gray-800 py-8 px-4 shadow-lg sm:rounded-lg sm:px-10 border border-gray-700">
+            {/* Error message */}
             {error && (
-              <div className="rounded-md bg-red-900 bg-opacity-50 p-4">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-red-300">{error}</p>
-                  </div>
-                </div>
+              <div className="mb-4 bg-red-900 bg-opacity-30 border border-red-800 text-red-300 px-4 py-3 rounded relative" role="alert">
+                <span className="block sm:inline">{error}</span>
               </div>
             )}
-
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75"
-              >
-                {loading ? (
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+                  Email address
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white sm:text-sm"
+                    placeholder="you@example.com"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+                  Password
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white sm:text-sm"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 bg-gray-700 rounded"
+                  />
+                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-400">
+                    Remember me
+                  </label>
+                </div>
+                
+                <div className="text-sm">
+                  <a href="#" className="font-medium text-blue-400 hover:text-blue-300">
+                    Forgot your password?
+                  </a>
+                </div>
+              </div>
+              
+              <div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  ) : "Sign in"}
+                </button>
+              </div>
+            </form>
+            
+            <div className="mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-600"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-gray-800 text-gray-400">Or continue with demo accounts</span>
+                </div>
+              </div>
+              
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => loginWithDemoAccount('patient')}
+                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-600 rounded-md shadow-sm bg-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-600"
+                >
+                  <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
-                ) : null}
-                Sign in
-              </button>
-            </div>
-          </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-600"></div>
+                  Patient Demo
+                </button>
+                <button
+                  onClick={() => loginWithDemoAccount('doctor')}
+                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-600 rounded-md shadow-sm bg-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-600"
+                >
+                  <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Doctor Demo
+                </button>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-gray-800 text-gray-400">Demo Accounts</span>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <button
-                onClick={() => fillDemoCredentials('patient')}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-600 rounded-md shadow-sm bg-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-600"
-              >
-                Patient Demo
-              </button>
-              <button
-                onClick={() => fillDemoCredentials('doctor')}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-600 rounded-md shadow-sm bg-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-600"
-              >
-                Doctor Demo
-              </button>
             </div>
           </div>
         </div>
       </div>
-
-      <p className="mt-8 text-center text-sm text-gray-400">
-        Don't have an account?{' '}
-        <Link to="/signup" className="font-medium text-blue-400 hover:text-blue-300">
-          Sign up
-        </Link>
-      </p>
+      
+      {/* Footer */}
+      <footer className="bg-gray-800 border-t border-gray-700 py-8">
+        <div className="container mx-auto px-4">
+          <div className="text-center text-gray-400 text-sm">
+            <p>&copy; {new Date().getFullYear()} ZemedicAI. All rights reserved.</p>
+            <p className="mt-2">
+              <a href="#" className="text-blue-400 hover:text-blue-300 mx-2">Privacy Policy</a>
+              <a href="#" className="text-blue-400 hover:text-blue-300 mx-2">Terms of Service</a>
+              <a href="#" className="text-blue-400 hover:text-blue-300 mx-2">Contact Us</a>
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
