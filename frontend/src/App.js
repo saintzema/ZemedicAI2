@@ -99,7 +99,7 @@ const Navigation = () => {
         <div className="hidden lg:flex space-x-3">
           <Link to="/login" className="px-5 py-2 text-sm rounded-md border border-blue-500 hover:bg-blue-900 hover:bg-opacity-30 transition duration-300">Log In</Link>
           <Link to="/signup" className="px-5 py-2 text-sm rounded-md bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition duration-300 shadow-md">Sign Up</Link>
-          <Link to="/new-dashboard" className="px-5 py-2 text-sm rounded-md bg-blue-600 hover:bg-blue-700 transition duration-300 shadow-md">New Dashboard</Link>
+          <Link to="/dashboard" className="px-5 py-2 text-sm rounded-md bg-blue-600 hover:bg-blue-700 transition duration-300 shadow-md">Dashboard</Link>
         </div>
         
         {/* Mobile menu button */}
