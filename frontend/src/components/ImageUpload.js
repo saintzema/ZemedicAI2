@@ -26,16 +26,26 @@ const ImageUpload = ({ setShowModal, apiKey }) => {
     }
   }, [apiKey]);
 
-  const handleDrag = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
-    } else if (e.type === 'dragleave') {
-      setDragActive(false);
+  const onDrop = useCallback(acceptedFiles => {
+    if (acceptedFiles && acceptedFiles.length > 0) {
+      const selectedFile = acceptedFiles[0];
+      setFile(selectedFile);
+      setError('');
+      
+      // Create a preview URL
+      const previewUrl = URL.createObjectURL(selectedFile);
+      setPreview(previewUrl);
     }
-  };
+  }, []);
+  
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.tiff', '.dicom', '.dcm']
+    },
+    maxSize: 10485760, // 10MB
+    maxFiles: 1
+  });
   
   const handleDrop = (e) => {
     e.preventDefault();
