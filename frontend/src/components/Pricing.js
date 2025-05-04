@@ -2,570 +2,350 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Pricing = () => {
-  const [billingCycle, setBillingCycle] = useState('monthly');
+  const [billingCycle, setBillingCycle] = useState('annually'); // 'monthly' or 'annually'
   
-  // Plans data
-  const plans = [
+  // Pricing tiers with both monthly and annual prices
+  const pricingTiers = [
     {
-      id: 'basic',
       name: 'Basic',
-      description: 'For individuals starting their health monitoring journey',
-      price: { monthly: 5, annual: 50 },
+      description: 'Essential features for individuals',
+      monthlyPrice: 9,
+      annualPrice: 5, // per month, billed annually ($60/year)
       features: [
-        'Basic scan analysis',
-        'Store up to 10 scans',
-        'Basic analytics',
+        '10 analyses per month',
+        'Standard accuracy algorithms',
+        'Basic findings reports',
         'Email support',
-        'Single device access'
+        'Mobile app access',
+        '7-day scan history'
       ],
-      limitations: [
-        'No specialist consultations',
-        'Limited analysis types',
-        'No data export',
-        'No custom AI training'
-      ],
-      cta: 'Get Started',
-      color: 'blue'
+      recommended: false,
+      ctaText: 'Start Free Trial'
     },
     {
-      id: 'professional',
       name: 'Professional',
-      description: 'For health-conscious individuals and small practices',
-      price: { monthly: 19, annual: 190 },
+      description: 'Advanced tools for healthcare professionals',
+      monthlyPrice: 39,
+      annualPrice: 29, // per month, billed annually ($348/year)
       features: [
-        'Enhanced scan analysis',
-        'Store up to 100 scans',
-        'Advanced analytics',
-        'Priority email support',
-        'Multi-device access',
-        'Data export',
-        'Basic specialist network'
+        '100 analyses per month',
+        'Enhanced accuracy algorithms',
+        'Detailed findings with recommendations',
+        'Priority email & chat support',
+        'Mobile app with offline capability',
+        '90-day scan history',
+        'Patient sharing capabilities',
+        'Export to DICOM/PACS'
       ],
-      limitations: [
-        'Limited custom AI training',
-        'Standard analysis speed'
-      ],
-      cta: 'Try Professional',
-      color: 'purple',
-      popular: true
+      recommended: true,
+      ctaText: 'Get Started'
     },
     {
-      id: 'premium',
-      name: 'Premium',
-      description: 'For medical professionals and clinics',
-      price: { monthly: 49, annual: 490 },
-      features: [
-        'Premium scan analysis',
-        'Unlimited scan storage',
-        'Real-time analytics',
-        '24/7 priority support',
-        'Unlimited devices',
-        'Advanced data export',
-        'Full specialist network access',
-        'Custom AI model training',
-        'API access',
-        'White-label options'
-      ],
-      limitations: [],
-      cta: 'Try Premium',
-      color: 'indigo'
-    },
-    {
-      id: 'enterprise',
       name: 'Enterprise',
-      description: 'For hospitals and large healthcare organizations',
-      price: { monthly: 99, annual: 990 },
+      description: 'Custom solutions for organizations',
+      monthlyPrice: 99,
+      annualPrice: 79, // per month, billed annually ($948/year)
       features: [
-        'Everything in Premium',
-        'Dedicated account manager',
-        'Custom integration support',
-        'SLA guarantees',
-        'Advanced security features',
-        'On-premise deployment options',
-        'Custom AI development',
-        'Training and onboarding',
-        'Bulk licensing discounts'
+        'Unlimited analyses',
+        'Highest accuracy AI algorithms',
+        'Custom AI model training',
+        'Comprehensive diagnostic assistance',
+        '24/7 dedicated support',
+        'Full history archive',
+        'Advanced analytics dashboard',
+        'EMR/EHR integration',
+        'Multi-user accounts',
+        'Custom API access'
       ],
-      limitations: [],
-      cta: 'Contact Sales',
-      color: 'teal'
+      recommended: false,
+      ctaText: 'Contact Sales'
     }
   ];
   
-  // Calculate annual savings
-  const calculateSavings = (plan) => {
-    const monthlyAnnual = plan.price.monthly * 12;
-    const annualPrice = plan.price.annual;
-    return Math.round(((monthlyAnnual - annualPrice) / monthlyAnnual) * 100);
-  };
-  
-  // Get color classes for a specific plan
-  const getColorClasses = (plan) => {
-    const colorMap = {
-      blue: {
-        bg: 'bg-blue-600',
-        bgHover: 'hover:bg-blue-500',
-        bgLight: 'bg-blue-900',
-        border: 'border-blue-500',
-        text: 'text-blue-400',
-        textHover: 'hover:text-blue-300',
-        gradient: 'from-blue-600 to-blue-700'
-      },
-      purple: {
-        bg: 'bg-purple-600',
-        bgHover: 'hover:bg-purple-500',
-        bgLight: 'bg-purple-900',
-        border: 'border-purple-500',
-        text: 'text-purple-400',
-        textHover: 'hover:text-purple-300',
-        gradient: 'from-purple-600 to-purple-700'
-      },
-      indigo: {
-        bg: 'bg-indigo-600',
-        bgHover: 'hover:bg-indigo-500',
-        bgLight: 'bg-indigo-900',
-        border: 'border-indigo-500',
-        text: 'text-indigo-400',
-        textHover: 'hover:text-indigo-300',
-        gradient: 'from-indigo-600 to-indigo-700'
-      },
-      teal: {
-        bg: 'bg-teal-600',
-        bgHover: 'hover:bg-teal-500',
-        bgLight: 'bg-teal-900',
-        border: 'border-teal-500',
-        text: 'text-teal-400',
-        textHover: 'hover:text-teal-300',
-        gradient: 'from-teal-600 to-teal-700'
-      }
-    };
-    
-    return colorMap[plan.color] || colorMap.blue;
+  // Calculate savings percentage
+  const calculateSavings = (monthlyPrice, annualPrice) => {
+    return Math.round(((monthlyPrice - annualPrice) / monthlyPrice) * 100);
   };
   
   return (
-    <div className="bg-gray-900 py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-blue-950 via-blue-900 to-black">
+      {/* Navigation */}
+      <nav className="text-white bg-gradient-to-r from-blue-950 to-purple-900 shadow-xl py-4">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="h-10 w-10 flex items-center justify-center">
+              <img src="/images/logo.svg" alt="ZemedicAI Logo" className="h-full w-full object-contain" />
+            </div>
+            <span className="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">ZemedicAI</span>
+          </Link>
+          
+          <div className="hidden lg:flex space-x-10">
+            <a href="/#features" className="hover:text-blue-300 transition duration-300">Features</a>
+            <a href="/#solutions" className="hover:text-blue-300 transition duration-300">Solutions</a>
+            <a href="/#about" className="hover:text-blue-300 transition duration-300">About Us</a>
+            <a href="/#contact" className="hover:text-blue-300 transition duration-300">Contact</a>
+          </div>
+          
+          <div className="hidden lg:flex space-x-3">
+            <Link to="/login" className="px-5 py-2 text-sm rounded-md border border-blue-500 hover:bg-blue-900 hover:bg-opacity-30 transition duration-300">
+              Log In
+            </Link>
+            <Link to="/signup" className="px-5 py-2 text-sm rounded-md bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition duration-300 shadow-md">
+              Sign Up
+            </Link>
+          </div>
+          
+          <div className="lg:hidden">
+            <Link to="/" className="text-white hover:text-blue-300 transition duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </nav>
+      
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h1 className="text-4xl font-extrabold text-white sm:text-5xl sm:tracking-tight lg:text-6xl">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6">
             Simple, Transparent Pricing
           </h1>
-          <p className="mt-5 text-xl text-gray-400">
-            Choose the plan that's right for your healthcare needs, with no hidden fees or long-term commitments.
+          <p className="text-xl text-blue-100 mb-10">
+            Choose the perfect plan that fits your needs, whether you're an individual practitioner or a large healthcare organization.
           </p>
           
-          {/* Billing Toggle */}
-          <div className="mt-12 flex justify-center">
-            <div className="relative bg-gray-800 p-1 rounded-lg inline-flex">
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`py-2 px-6 text-sm font-medium rounded-md ${
-                  billingCycle === 'monthly'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingCycle('annual')}
-                className={`ml-1 py-2 px-6 text-sm font-medium rounded-md ${
-                  billingCycle === 'annual'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                Annual
-              </button>
-              
-              {billingCycle === 'annual' && (
-                <span className="absolute -top-3 right-1 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">
-                  Save 15-20%
-                </span>
-              )}
-            </div>
+          {/* Billing cycle toggle */}
+          <div className="flex justify-center items-center mb-10">
+            <span className={`mr-3 text-sm font-medium ${billingCycle === 'monthly' ? 'text-white' : 'text-blue-300'}`}>
+              Monthly
+            </span>
+            <button 
+              onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annually' : 'monthly')}
+              className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none ${
+                billingCycle === 'annually' ? 'bg-blue-600' : 'bg-gray-600'
+              }`}
+            >
+              <span 
+                className={`inline-block h-6 w-6 rounded-full bg-white transition-transform duration-300 ${
+                  billingCycle === 'annually' ? 'translate-x-9' : 'translate-x-1'
+                }`} 
+              />
+            </button>
+            <span className={`ml-3 text-sm font-medium ${billingCycle === 'annually' ? 'text-white' : 'text-blue-300'}`}>
+              Annual <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full ml-1">Save up to 44%</span>
+            </span>
           </div>
         </div>
         
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 gap-y-8 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-          {plans.map((plan) => {
-            const colorClasses = getColorClasses(plan);
-            
-            return (
-              <div
-                key={plan.id}
-                className={`relative bg-gray-800 rounded-2xl shadow-xl overflow-hidden ${
-                  plan.popular ? 'ring-2 ring-blue-500 transform sm:scale-105 z-10' : ''
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute top-0 right-0">
-                    <div className="text-xs font-bold uppercase py-1.5 px-4 bg-blue-600 text-white rounded-bl-lg">
-                      Most Popular
-                    </div>
-                  </div>
-                )}
-                
-                <div className={`bg-gradient-to-b ${colorClasses.gradient} p-8`}>
-                  <h3 className="text-2xl font-bold text-white">{plan.name}</h3>
-                  <p className="mt-2 text-sm text-white text-opacity-80">
-                    {plan.description}
-                  </p>
-                  <div className="mt-6">
-                    <div className="flex items-baseline">
-                      <span className="text-5xl font-extrabold text-white">
-                        ${billingCycle === 'monthly' ? plan.price.monthly : plan.price.annual}
-                      </span>
-                      <span className="ml-2 text-lg text-white text-opacity-80">
-                        /{billingCycle === 'monthly' ? 'mo' : 'yr'}
-                      </span>
-                    </div>
-                    
-                    {billingCycle === 'annual' && (
-                      <p className="mt-2 text-sm text-green-300">
-                        Save {calculateSavings(plan)}% with annual billing
-                      </p>
-                    )}
-                  </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {pricingTiers.map((tier, index) => (
+            <div 
+              key={tier.name}
+              className={`rounded-2xl overflow-hidden border ${
+                tier.recommended 
+                  ? 'border-blue-500 shadow-lg shadow-blue-500/20' 
+                  : 'border-gray-700'
+              } bg-gray-800 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl`}
+            >
+              {tier.recommended && (
+                <div className="bg-blue-600 py-1.5 text-center text-sm font-medium text-white">
+                  Most Popular
                 </div>
-                
-                <div className="p-8">
-                  <ul className="space-y-4">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start">
-                        <svg className={`h-5 w-5 ${colorClasses.text} flex-shrink-0 mr-2`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span className="text-gray-300">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  {plan.limitations.length > 0 && (
-                    <div className="mt-8">
-                      <h4 className="text-sm font-medium text-gray-400 mb-3">Limitations:</h4>
-                      <ul className="space-y-4">
-                        {plan.limitations.map((limitation, idx) => (
-                          <li key={idx} className="flex items-start">
-                            <svg className="h-5 w-5 text-red-500 flex-shrink-0 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            <span className="text-gray-400">{limitation}</span>
-                          </li>
-                        ))}
-                      </ul>
+              )}
+              <div className="p-8">
+                <h3 className="text-2xl font-bold text-white">{tier.name}</h3>
+                <p className="mt-2 text-gray-400">{tier.description}</p>
+                <div className="mt-6">
+                  <div className="flex items-end">
+                    <span className="text-5xl font-extrabold text-white">
+                      ${billingCycle === 'monthly' ? tier.monthlyPrice : tier.annualPrice}
+                    </span>
+                    <span className="text-lg ml-2 pb-1.5 text-gray-400">/mo</span>
+                  </div>
+                  {billingCycle === 'annually' && (
+                    <div className="mt-1 flex items-center">
+                      <span className="text-green-400 text-sm font-medium">
+                        Save {calculateSavings(tier.monthlyPrice, tier.annualPrice)}%
+                      </span>
+                      <span className="ml-2 text-sm text-gray-400">
+                        ${tier.annualPrice * 12}/year
+                      </span>
                     </div>
                   )}
-                  
-                  <div className="mt-10">
-                    <Link
-                      to="/signup"
-                      className={`block w-full ${colorClasses.bg} ${colorClasses.bgHover} text-white rounded-lg py-3 px-4 text-center font-medium shadow-sm hover:shadow-md transition-all`}
-                    >
-                      {plan.cta}
-                    </Link>
-                  </div>
+                </div>
+                <ul className="mt-8 space-y-4">
+                  {tier.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start">
+                      <svg className="h-5 w-5 text-blue-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-gray-300">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8">
+                  <a
+                    href={tier.name === 'Enterprise' ? '/contact-sales' : '/signup'}
+                    className={`block w-full py-3 px-4 rounded-md text-center font-medium ${
+                      tier.recommended 
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white' 
+                        : 'bg-blue-900 hover:bg-blue-800 text-white'
+                    } transition-colors duration-300`}
+                  >
+                    {tier.ctaText}
+                  </a>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
         
-        {/* Feature Comparison */}
-        <div className="mt-24 bg-gray-800 rounded-2xl overflow-hidden">
-          <div className="px-6 py-8 sm:px-8">
-            <h2 className="text-2xl font-bold text-white">Feature Comparison</h2>
-            <p className="mt-3 text-gray-400">
-              A detailed breakdown of what's included in each plan to help you make the right choice.
-            </p>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-700">
-              <thead>
-                <tr className="bg-gray-750">
-                  <th scope="col" className="py-5 pl-6 pr-3 text-left text-sm font-semibold text-white sm:pl-8">
-                    Feature
-                  </th>
-                  {plans.map((plan) => (
-                    <th
-                      key={plan.id}
-                      scope="col"
-                      className={`px-3 py-5 text-center text-sm font-semibold text-white ${
-                        plan.popular ? 'bg-gray-700' : ''
-                      }`}
-                    >
-                      {plan.name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-700">
-                {/* Scan Analysis */}
-                <tr>
-                  <th scope="row" className="py-5 pl-6 pr-3 text-left text-sm font-medium text-white sm:pl-8">
-                    Scan Analysis Types
-                  </th>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    Basic
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300 bg-gray-750">
-                    Advanced
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    Premium
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    All Types
-                  </td>
-                </tr>
-                
-                {/* Storage */}
-                <tr>
-                  <th scope="row" className="py-5 pl-6 pr-3 text-left text-sm font-medium text-white sm:pl-8">
-                    Scan Storage
-                  </th>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    10 Scans
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300 bg-gray-750">
-                    100 Scans
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    Unlimited
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    Unlimited
-                  </td>
-                </tr>
-                
-                {/* Analytics */}
-                <tr>
-                  <th scope="row" className="py-5 pl-6 pr-3 text-left text-sm font-medium text-white sm:pl-8">
-                    Analytics
-                  </th>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    Basic
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300 bg-gray-750">
-                    Advanced
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    Real-time
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    Real-time + Custom
-                  </td>
-                </tr>
-                
-                {/* Support */}
-                <tr>
-                  <th scope="row" className="py-5 pl-6 pr-3 text-left text-sm font-medium text-white sm:pl-8">
-                    Support
-                  </th>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    Email
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300 bg-gray-750">
-                    Priority Email
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    24/7 Priority
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    Dedicated Manager
-                  </td>
-                </tr>
-                
-                {/* Specialist Network */}
-                <tr>
-                  <th scope="row" className="py-5 pl-6 pr-3 text-left text-sm font-medium text-white sm:pl-8">
-                    Specialist Network
-                  </th>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    <svg className="h-5 w-5 text-red-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300 bg-gray-750">
-                    Basic
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    Full Access
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    Full Access
-                  </td>
-                </tr>
-                
-                {/* AI Training */}
-                <tr>
-                  <th scope="row" className="py-5 pl-6 pr-3 text-left text-sm font-medium text-white sm:pl-8">
-                    Custom AI Training
-                  </th>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    <svg className="h-5 w-5 text-red-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300 bg-gray-750">
-                    Limited
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    <svg className="h-5 w-5 text-green-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    <svg className="h-5 w-5 text-green-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </td>
-                </tr>
-                
-                {/* API Access */}
-                <tr>
-                  <th scope="row" className="py-5 pl-6 pr-3 text-left text-sm font-medium text-white sm:pl-8">
-                    API Access
-                  </th>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    <svg className="h-5 w-5 text-red-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300 bg-gray-750">
-                    <svg className="h-5 w-5 text-red-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    <svg className="h-5 w-5 text-green-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    <svg className="h-5 w-5 text-green-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </td>
-                </tr>
-                
-                {/* Custom Integration */}
-                <tr>
-                  <th scope="row" className="py-5 pl-6 pr-3 text-left text-sm font-medium text-white sm:pl-8">
-                    Custom Integration
-                  </th>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    <svg className="h-5 w-5 text-red-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300 bg-gray-750">
-                    <svg className="h-5 w-5 text-red-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    <svg className="h-5 w-5 text-red-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </td>
-                  <td className="px-3 py-5 text-center text-sm text-gray-300">
-                    <svg className="h-5 w-5 text-green-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        
-        {/* FAQs */}
-        <div className="mt-24">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-              Frequently Asked Questions
-            </h2>
-            <p className="mt-4 text-lg text-gray-400">
-              Everything you need to know about ZemedicAI pricing and plans.
-            </p>
-          </div>
-          
-          <div className="mt-12 max-w-3xl mx-auto space-y-8">
-            <div className="bg-gray-800 rounded-lg p-6">
-              <h3 className="text-lg font-medium text-white">
-                Can I switch plans at any time?
-              </h3>
-              <p className="mt-2 text-gray-400">
-                Yes, you can upgrade or downgrade your plan at any time. Changes to your subscription will take effect immediately for upgrades, or at the end of your current billing cycle for downgrades.
-              </p>
-            </div>
-            
-            <div className="bg-gray-800 rounded-lg p-6">
-              <h3 className="text-lg font-medium text-white">
-                Do you offer a free trial?
-              </h3>
-              <p className="mt-2 text-gray-400">
-                Yes, we offer a 14-day free trial of our Professional plan for new users. No credit card is required to start your trial, and you can cancel at any time before the trial ends.
-              </p>
-            </div>
-            
-            <div className="bg-gray-800 rounded-lg p-6">
-              <h3 className="text-lg font-medium text-white">
-                Are there any long-term contracts?
-              </h3>
-              <p className="mt-2 text-gray-400">
-                No, all our plans are subscription-based and can be canceled at any time. We don't lock you into long-term contracts, though annual billing options are available at a discount.
-              </p>
-            </div>
-            
-            <div className="bg-gray-800 rounded-lg p-6">
-              <h3 className="text-lg font-medium text-white">
-                What payment methods do you accept?
-              </h3>
-              <p className="mt-2 text-gray-400">
-                We accept major credit cards including Visa, Mastercard, American Express, and Discover. For Enterprise plans, we also offer invoice-based payment options.
-              </p>
-            </div>
-            
-            <div className="bg-gray-800 rounded-lg p-6">
-              <h3 className="text-lg font-medium text-white">
-                Do you offer special pricing for healthcare institutions?
-              </h3>
-              <p className="mt-2 text-gray-400">
-                Yes, we offer volume discounts for healthcare providers, clinics, and hospitals. Contact our sales team for custom pricing based on your organization's size and needs.
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        {/* CTA */}
-        <div className="mt-24 rounded-2xl bg-gradient-to-r from-blue-900 to-indigo-900 py-12 px-8 md:py-16 md:px-12 text-center">
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            Ready to transform your healthcare experience?
+        {/* FAQ Section */}
+        <div className="mt-24 max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-white text-center mb-12">
+            Frequently Asked Questions
           </h2>
-          <p className="mt-4 text-xl text-blue-200 max-w-2xl mx-auto">
-            Join thousands of healthcare professionals and patients who trust ZemedicAI for accurate, AI-powered medical imaging analysis.
+          
+          <div className="space-y-6">
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+              <h3 className="text-xl font-medium text-white mb-2">Can I switch plans later?</h3>
+              <p className="text-gray-300">Yes, you can upgrade, downgrade, or cancel your plan at any time. Changes to your subscription will take effect on your next billing cycle.</p>
+            </div>
+            
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+              <h3 className="text-xl font-medium text-white mb-2">Is there a free trial available?</h3>
+              <p className="text-gray-300">Yes, all plans include a 14-day free trial. No credit card required to start. You can explore all the features before committing to a paid plan.</p>
+            </div>
+            
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+              <h3 className="text-xl font-medium text-white mb-2">What payment methods do you accept?</h3>
+              <p className="text-gray-300">We accept all major credit cards, PayPal, and for Enterprise customers, we also offer invoice-based payment options.</p>
+            </div>
+            
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+              <h3 className="text-xl font-medium text-white mb-2">Is my data secure?</h3>
+              <p className="text-gray-300">Absolutely. We use industry-standard encryption and security practices. All patient data is anonymized and stored in compliance with HIPAA regulations.</p>
+            </div>
+            
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+              <h3 className="text-xl font-medium text-white mb-2">Do you offer custom plans for healthcare systems?</h3>
+              <p className="text-gray-300">Yes, we offer tailored Enterprise solutions for hospitals and healthcare networks. Contact our sales team for a custom quote based on your specific requirements.</p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Final CTA */}
+        <div className="mt-24 text-center">
+          <h2 className="text-3xl font-bold text-white mb-6">
+            Ready to Transform Your Medical Imaging?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+            Join thousands of healthcare professionals already using ZemedicAI to improve diagnostics and patient care.
           </p>
-          <div className="mt-8 flex justify-center space-x-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
               to="/signup"
-              className="inline-block bg-white text-blue-900 hover:bg-blue-50 py-3 px-6 font-medium rounded-lg shadow-md transition-colors"
+              className="px-8 py-4 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition duration-300 text-center font-semibold shadow-lg"
             >
               Start Free Trial
             </Link>
             <Link
               to="/contact"
-              className="inline-block bg-transparent border border-white text-white hover:bg-white hover:bg-opacity-10 py-3 px-6 font-medium rounded-lg transition-colors"
+              className="px-8 py-4 rounded-md border border-blue-400 text-blue-400 hover:bg-blue-900 hover:bg-opacity-30 transition duration-300 text-center font-semibold"
             >
               Contact Sales
             </Link>
           </div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <footer className="bg-gray-900 border-t border-gray-800 mt-24 py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between">
+            <div className="mb-8 md:mb-0">
+              <Link to="/" className="flex items-center">
+                <img className="h-10 w-auto" src="/images/logo.svg" alt="ZemedicAI" />
+                <span className="ml-2 text-white text-xl font-bold">ZemedicAI</span>
+              </Link>
+              <p className="mt-4 text-gray-400 max-w-xs">
+                Revolutionizing medical imaging with AI for improved diagnostics worldwide.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div>
+                <h3 className="text-white font-semibold mb-4">Product</h3>
+                <ul className="space-y-2">
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Security</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Releases</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="text-white font-semibold mb-4">Company</h3>
+                <ul className="space-y-2">
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">About</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Careers</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Partners</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="text-white font-semibold mb-4">Resources</h3>
+                <ul className="space-y-2">
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Tutorials</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Research</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="text-white font-semibold mb-4">Legal</h3>
+                <ul className="space-y-2">
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">HIPAA</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Cookie Policy</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-12 border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-500 text-sm">
+              &copy; {new Date().getFullYear()} ZemedicAI. All rights reserved.
+            </p>
+            <div className="flex space-x-6 mt-4 md:mt-0">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                <span className="sr-only">Twitter</span>
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                </svg>
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                <span className="sr-only">GitHub</span>
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                </svg>
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                <span className="sr-only">LinkedIn</span>
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fillRule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clipRule="evenodd" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
