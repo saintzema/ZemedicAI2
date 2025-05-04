@@ -22,6 +22,16 @@ const NewDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+  
+  // Check if API key is already stored
+  useEffect(() => {
+    const storedApiKey = localStorage.getItem('googleHealthApiKey');
+    if (storedApiKey) {
+      setApiKey(storedApiKey);
+    }
+  }, []);
   const [user, setUser] = useState({
     id: 'user-1',
     first_name: 'John',
