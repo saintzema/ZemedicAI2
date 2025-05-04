@@ -4,18 +4,27 @@ import axios from 'axios';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const ImageUpload = ({ onUploadComplete }) => {
+const ImageUpload = ({ setShowModal, apiKey }) => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [imageType, setImageType] = useState('xray');
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
-  const [dragActive, setDragActive] = useState(false);
   const [uploadStep, setUploadStep] = useState(1); // 1: Upload, 2: Analysis, 3: Results
   const [analysisResult, setAnalysisResult] = useState(null);
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
-  const fileInputRef = useRef(null);
-  const navigate = useNavigate();
+  const [usingGoogleAPI, setUsingGoogleAPI] = useState(false);
+  
+  // Check if Google Health API key is available
+  useEffect(() => {
+    if (apiKey) {
+      setUsingGoogleAPI(true);
+      console.log('Using Google Health API for analysis');
+    } else {
+      setUsingGoogleAPI(false);
+      console.log('Using standard analysis (Google Health API key not provided)');
+    }
+  }, [apiKey]);
 
   const handleDrag = (e) => {
     e.preventDefault();
