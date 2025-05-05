@@ -633,15 +633,15 @@ const DashboardProfile = () => {
       
       {/* Medical Information */}
       {activeSection === 'medical' && (
-        <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-700">
-            <h2 className="text-lg font-medium text-white">Medical Information</h2>
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-medium text-gray-800">Medical Information</h2>
           </div>
           
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="allergies" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="allergies" className="block text-sm font-medium text-gray-700 mb-1">
                   Allergies
                 </label>
                 {editMode ? (
@@ -649,16 +649,16 @@ const DashboardProfile = () => {
                     id="allergies"
                     value={profile.medical_info.allergies}
                     onChange={(e) => handleInputChange('medical_info', 'allergies', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     rows="3"
                   ></textarea>
                 ) : (
-                  <p className="text-white">{profile.medical_info.allergies || 'None'}</p>
+                  <p className="text-gray-800">{profile.medical_info.allergies || 'None'}</p>
                 )}
               </div>
               
               <div>
-                <label htmlFor="conditions" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="conditions" className="block text-sm font-medium text-gray-700 mb-1">
                   Medical Conditions
                 </label>
                 {editMode ? (
@@ -666,16 +666,16 @@ const DashboardProfile = () => {
                     id="conditions"
                     value={profile.medical_info.conditions}
                     onChange={(e) => handleInputChange('medical_info', 'conditions', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     rows="3"
                   ></textarea>
                 ) : (
-                  <p className="text-white">{profile.medical_info.conditions || 'None'}</p>
+                  <p className="text-gray-800">{profile.medical_info.conditions || 'None'}</p>
                 )}
               </div>
               
               <div>
-                <label htmlFor="medications" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="medications" className="block text-sm font-medium text-gray-700 mb-1">
                   Current Medications
                 </label>
                 {editMode ? (
@@ -683,16 +683,16 @@ const DashboardProfile = () => {
                     id="medications"
                     value={profile.medical_info.medications}
                     onChange={(e) => handleInputChange('medical_info', 'medications', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     rows="3"
                   ></textarea>
                 ) : (
-                  <p className="text-white">{profile.medical_info.medications || 'None'}</p>
+                  <p className="text-gray-800">{profile.medical_info.medications || 'None'}</p>
                 )}
               </div>
               
               <div>
-                <label htmlFor="blood_type" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="blood_type" className="block text-sm font-medium text-gray-700 mb-1">
                   Blood Type
                 </label>
                 {editMode ? (
@@ -700,7 +700,7 @@ const DashboardProfile = () => {
                     id="blood_type"
                     value={profile.medical_info.blood_type}
                     onChange={(e) => handleInputChange('medical_info', 'blood_type', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="">Select Blood Type</option>
                     <option value="A+">A+</option>
@@ -714,19 +714,19 @@ const DashboardProfile = () => {
                     <option value="Unknown">Unknown</option>
                   </select>
                 ) : (
-                  <p className="text-white">{profile.medical_info.blood_type || 'Unknown'}</p>
+                  <p className="text-gray-800">{profile.medical_info.blood_type || 'Unknown'}</p>
                 )}
               </div>
             </div>
             
-            <div className="mt-6 p-4 bg-blue-900 bg-opacity-30 border border-blue-800 rounded-lg">
+            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex items-start">
-                <svg className="h-6 w-6 text-blue-400 mr-3 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-6 w-6 text-blue-500 mr-3 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div>
-                  <h3 className="text-white font-medium">Privacy Notice</h3>
-                  <p className="mt-1 text-blue-300 text-sm">
+                  <h3 className="text-gray-800 font-medium">Privacy Notice</h3>
+                  <p className="mt-1 text-blue-700 text-sm">
                     Your medical information is kept confidential and only shared with healthcare providers you authorize. You can adjust your data sharing preferences in the Privacy Settings.
                   </p>
                 </div>
