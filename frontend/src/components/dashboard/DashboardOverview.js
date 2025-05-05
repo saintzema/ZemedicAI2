@@ -266,71 +266,71 @@ const DashboardOverview = () => {
       </div>
       
       {/* Recent Scans Table */}
-      <div className="bg-gray-800 rounded-lg shadow-md border border-gray-700 overflow-hidden mb-8">
-        <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-white">Recent Scans</h2>
-          <Link to="/dashboard/history" className="text-blue-400 hover:text-blue-300 text-sm font-medium">
+      <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden mb-8">
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-gray-800">Recent Scans</h2>
+          <Link to="/dashboard/history" className="text-blue-600 hover:text-blue-800 text-sm font-medium">
             View All
           </Link>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-700">
-            <thead className="bg-gray-750">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  {user.role === 'doctor' ? 'Patient' : 'Scan ID'}
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {userRole === 'doctor' ? 'Patient' : 'Scan ID'}
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Type
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Date
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Findings
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  {user.role === 'doctor' ? 'Ordered By' : 'Doctor'}
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {userRole === 'doctor' ? 'Ordered By' : 'Doctor'}
                 </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-gray-800 divide-y divide-gray-700">
+            <tbody className="bg-white divide-y divide-gray-200">
               {recentScans.map((scan) => (
-                <tr key={scan.id} className="hover:bg-gray-750 transition-colors">
+                <tr key={scan.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-white">
-                      {user.role === 'doctor' ? scan.patient_name : scan.id}
+                    <div className="text-sm font-medium text-gray-900">
+                      {userRole === 'doctor' ? scan.patient_name : scan.id}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-300">{scan.scan_type}</div>
+                    <div className="text-sm text-gray-900">{scan.scan_type}</div>
                     <div className="text-xs text-gray-500">{scan.body_part}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-300">{formatDate(scan.date)}</div>
+                    <div className="text-sm text-gray-500">{formatDate(scan.date)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-900 text-green-300">
+                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                       {scan.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {scan.findings}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {scan.doctor}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <Link to={`/dashboard/analyses?id=${scan.id}`} className="text-blue-400 hover:text-blue-300 mr-3">
+                    <Link to={`/dashboard/analysis?id=${scan.id}`} className="text-blue-600 hover:text-blue-900 mr-3">
                       View
                     </Link>
-                    <button className="text-purple-400 hover:text-purple-300">
+                    <button className="text-purple-600 hover:text-purple-900">
                       Share
                     </button>
                   </td>
