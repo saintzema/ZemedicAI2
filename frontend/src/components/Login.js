@@ -1,25 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const Login = ({ setIsLoggedIn }) => {
+const Login = ({ onDemoLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  
   const navigate = useNavigate();
-  
-  // Check if user is already logged in
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -42,7 +35,10 @@ const Login = ({ setIsLoggedIn }) => {
       const userRole = response.data.role || 'patient'; // Default to patient if role not specified
       localStorage.setItem('token', token);
       localStorage.setItem('userRole', userRole);
-      sessionStorage.setItem('token', token);
+      
+      if (rememberMe) {
+        sessionStorage.setItem('token', token);
+      }
       
       console.log('Login successful, redirecting to dashboard');
       // Redirect to dashboard
@@ -52,6 +48,19 @@ const Login = ({ setIsLoggedIn }) => {
       setError('Invalid credentials. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+  
+  // Handle demo login
+  const handleDemoLogin = (role) => {
+    if (typeof onDemoLogin === 'function') {
+      onDemoLogin(role);
+    } else {
+      // Fallback if prop not provided
+      const demoToken = `demo-token-${Date.now()}`;
+      localStorage.setItem('token', demoToken);
+      localStorage.setItem('userRole', role);
+      navigate('/dashboard');
     }
   };
   
