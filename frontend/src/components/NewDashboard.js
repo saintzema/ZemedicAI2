@@ -47,6 +47,13 @@ const NewDashboard = () => {
     }
   }, [userRole]);
   
+  // Handle API key submission
+  const handleAPIKeySubmit = (apiKey) => {
+    localStorage.setItem('googleHealthApiKey', apiKey);
+    setUserHasAPIKey(true);
+    setShowAPIKeyModal(false);
+  };
+
   // Handle API key modal actions
   const skipApiKey = () => {
     localStorage.setItem('googleHealthApiKey', 'demo-api-key-123');
