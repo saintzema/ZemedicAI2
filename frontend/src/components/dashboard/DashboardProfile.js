@@ -193,13 +193,13 @@ const DashboardProfile = () => {
   }
   
   return (
-    <div>
+    <div className="max-w-4xl mx-auto">
       <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
-        <h1 className="text-2xl font-bold text-white mb-4 md:mb-0">Profile</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4 md:mb-0">Profile</h1>
         {!editMode ? (
           <button
             onClick={() => setEditMode(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition-colors"
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
           >
             <svg className="h-4 w-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -210,14 +210,14 @@ const DashboardProfile = () => {
           <div className="flex space-x-3">
             <button
               onClick={() => setEditMode(false)}
-              className="px-4 py-2 border border-gray-600 text-gray-300 rounded-md hover:bg-gray-700 transition-colors"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
               disabled={saving}
             >
               Cancel
             </button>
             <button
               onClick={saveProfile}
-              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-500 transition-colors disabled:opacity-50"
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50"
               disabled={saving}
             >
               {saving ? (
@@ -243,7 +243,7 @@ const DashboardProfile = () => {
       
       {/* Success Message */}
       {successMessage && (
-        <div className="mb-6 bg-green-900 bg-opacity-20 border border-green-700 rounded-lg p-4 text-green-300 flex items-center">
+        <div className="mb-6 bg-green-100 border border-green-300 rounded-lg p-4 text-green-700 flex items-center">
           <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
@@ -252,18 +252,18 @@ const DashboardProfile = () => {
       )}
       
       {/* Profile Header */}
-      <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 mb-6">
+      <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 mb-6">
         <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0">
           <div className="relative">
             <img
               src={profile.profile_picture || '/images/avatar-placeholder.jpg'}
               alt={`${profile.first_name} ${profile.last_name}`}
-              className="h-32 w-32 rounded-full object-cover border-4 border-gray-700"
+              className="h-32 w-32 rounded-full object-cover border-4 border-gray-100 shadow"
             />
             {editMode && (
               <div className="absolute bottom-0 right-0">
                 <label htmlFor="profile-image" className="cursor-pointer">
-                  <div className="h-10 w-10 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-500 transition-colors shadow-md">
+                  <div className="h-10 w-10 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition-colors shadow-md">
                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -282,21 +282,21 @@ const DashboardProfile = () => {
           </div>
           
           <div className="ml-0 md:ml-8 text-center md:text-left">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-bold text-gray-800">
               {editMode ? (
                 <div className="flex space-x-3">
                   <input
                     type="text"
                     value={profile.first_name}
                     onChange={(e) => handleInputChange(null, 'first_name', e.target.value)}
-                    className="bg-gray-700 border border-gray-600 rounded-md py-1 px-2 text-white w-32 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="bg-white border border-gray-300 rounded-md py-1 px-2 text-gray-800 w-32 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     placeholder="First Name"
                   />
                   <input
                     type="text"
                     value={profile.last_name}
                     onChange={(e) => handleInputChange(null, 'last_name', e.target.value)}
-                    className="bg-gray-700 border border-gray-600 rounded-md py-1 px-2 text-white w-32 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="bg-white border border-gray-300 rounded-md py-1 px-2 text-gray-800 w-32 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Last Name"
                   />
                 </div>
@@ -304,18 +304,18 @@ const DashboardProfile = () => {
                 `${profile.first_name} ${profile.last_name}`
               )}
             </h2>
-            <p className="text-gray-400 mt-1">
+            <p className="text-gray-500 mt-1">
               {userRole === 'doctor' ? 'Doctor' : 'Patient'}
             </p>
             <div className="mt-3 flex flex-wrap justify-center md:justify-start">
-              <div className="flex items-center mr-4 text-sm text-gray-300 mb-2 md:mb-0">
-                <svg className="h-4 w-4 mr-1 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex items-center mr-4 text-sm text-gray-600 mb-2 md:mb-0">
+                <svg className="h-4 w-4 mr-1 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 {profile.email}
               </div>
-              <div className="flex items-center text-sm text-gray-300">
-                <svg className="h-4 w-4 mr-1 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex items-center text-sm text-gray-600">
+                <svg className="h-4 w-4 mr-1 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 {editMode ? (
@@ -323,7 +323,7 @@ const DashboardProfile = () => {
                     type="text"
                     value={profile.phone}
                     onChange={(e) => handleInputChange(null, 'phone', e.target.value)}
-                    className="bg-gray-700 border border-gray-600 rounded-md py-1 px-2 text-white w-40 ml-1 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="bg-white border border-gray-300 rounded-md py-1 px-2 text-gray-800 w-40 ml-1 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Phone Number"
                   />
                 ) : (
