@@ -6,27 +6,19 @@ import {
   FaQuestion, FaHeadset, FaBars, FaTimes
 } from 'react-icons/fa';
 
-const NewDashboardSidebar = ({ userRole = 'patient' }) => {
+const NewDashboardSidebar = ({ userRole = 'patient', isCollapsed = false, toggleSidebar }) => {
   const location = useLocation();
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   // Handle window resize for responsive behavior
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
-        setIsCollapsed(false);
-      }
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
 
   const logout = () => {
     localStorage.removeItem('token');
