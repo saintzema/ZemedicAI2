@@ -6,7 +6,7 @@ import base64
 from datetime import datetime
 
 class ZemedicAITester:
-    def __init__(self, base_url="https://3fe756b7-c791-4c34-9728-c1fef49774cc.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://c49f775f-3626-4c86-a735-08ae8485b965.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.tests_run = 0
