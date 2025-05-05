@@ -3,7 +3,8 @@ import axios from 'axios';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const DashboardProfile = ({ user }) => {
+const DashboardProfile = () => {
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'patient');
   const [profile, setProfile] = useState({
     first_name: '',
     last_name: '',
