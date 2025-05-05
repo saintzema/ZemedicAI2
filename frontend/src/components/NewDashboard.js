@@ -100,8 +100,6 @@ const NewDashboard = () => {
     }
   ]);
   
-  const location = useLocation();
-  
   // Close the sidebar on route change on mobile
   useEffect(() => {
     setSidebarOpen(false);
