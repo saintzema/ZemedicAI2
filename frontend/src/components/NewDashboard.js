@@ -233,225 +233,69 @@ const NewDashboard = () => {
       {/* Sidebar */}
       <NewDashboardSidebar userRole={userRole} />
       
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Navigation */}
-        <div className="sticky top-0 z-10 flex-shrink-0 h-16 bg-gray-800 shadow-md border-b border-gray-700">
-          <div className="flex items-center justify-between px-4 h-full">
-            {/* Mobile menu button and breadcrumb */}
-            <div className="flex items-center space-x-4">
+      {/* Main content */}
+      <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isMobile ? 'ml-0' : 'ml-64'}`}>
+        {/* Top navigation bar */}
+        <div className="bg-white shadow-sm z-10">
+          <div className="px-4 py-3 flex items-center justify-between">
+            {isMobile && (
               <button
-                type="button"
-                className="text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 md:hidden"
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                aria-label="Open sidebar"
+                onClick={toggleSidebar}
+                className="text-gray-600 hover:text-gray-900 focus:outline-none"
               >
                 <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
                 </svg>
               </button>
-              
-              {/* Breadcrumbs */}
-              <nav className="flex" aria-label="Breadcrumb">
-                <ol className="flex items-center space-x-2">
-                  <li>
-                    <Link to="/dashboard" className="text-gray-400 hover:text-gray-300 transition-colors">
-                      Dashboard
-                    </Link>
-                  </li>
-                  {getCurrentSection() !== 'Overview' && (
-                    <>
-                      <li>
-                        <svg className="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </li>
-                      <li>
-                        <span className="text-gray-300 font-medium">{getCurrentSection()}</span>
-                      </li>
-                    </>
-                  )}
-                </ol>
-              </nav>
+            )}
+            
+            <div className="text-xl font-semibold text-gray-800">
+              {location.pathname === '/dashboard' ? 'Dashboard Overview' : 
+               location.pathname === '/dashboard/history' ? 'Scan History' :
+               location.pathname === '/dashboard/analysis' ? 'Analysis' :
+               location.pathname === '/dashboard/records' ? 'Health Records' :
+               location.pathname === '/dashboard/doctors' ? 'My Doctors' :
+               location.pathname === '/dashboard/patients' ? 'My Patients' :
+               location.pathname === '/dashboard/ai-training' ? 'AI Training' :
+               location.pathname === '/dashboard/settings' ? 'Settings' :
+               location.pathname === '/dashboard/profile' ? 'Profile' :
+               location.pathname === '/dashboard/support' ? 'Support' :
+               location.pathname === '/dashboard/faqs' ? 'FAQs' : 'Dashboard'}
             </div>
             
-            {/* Right side buttons */}
-            <div className="flex items-center space-x-2">
-              {/* API Key button */}
-              <button
-                onClick={() => setShowApiKeyModal(true)}
-                className="flex items-center text-sm text-white bg-green-600 hover:bg-green-500 px-3 py-2 rounded-md transition-colors"
-                aria-label="API Key settings"
+            <div className="flex items-center space-x-3">
+              {/* Role switcher (for demo) */}
+              <button 
+                onClick={switchRole}
+                className="text-sm bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-1 px-3 rounded transition-colors duration-150"
               >
-                <svg className="h-5 w-5 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                </svg>
-                <span className="hidden sm:inline">API Key</span>
+                Switch to {userRole === 'patient' ? 'Doctor' : 'Patient'} View
               </button>
-              
-              {/* Upload button */}
-              <button
-                onClick={() => setShowUploadModal(true)}
-                className="flex items-center text-sm text-white bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded-md transition-colors"
-                aria-label="Upload scan"
-              >
-                <svg className="h-5 w-5 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                <span className="hidden sm:inline">Upload Scan</span>
-              </button>
-              
-              {/* Notification bell */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="p-2 rounded-full text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  aria-label={`Notifications (${unreadNotificationsCount} unread)`}
-                >
-                  <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
-                  {unreadNotificationsCount > 0 && (
-                    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {unreadNotificationsCount}
-                    </span>
-                  )}
-                </button>
-                
-                {/* Notification dropdown */}
-                {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 bg-gray-800 border border-gray-700 rounded-md shadow-lg overflow-hidden z-50">
-                    <div className="p-3 border-b border-gray-700 flex justify-between items-center">
-                      <h3 className="text-white font-medium">Notifications</h3>
-                      {unreadNotificationsCount > 0 && (
-                        <button 
-                          onClick={markAllAsRead}
-                          className="text-sm text-blue-400 hover:text-blue-300"
-                        >
-                          Mark all as read
-                        </button>
-                      )}
-                    </div>
-                    <div className="max-h-96 overflow-y-auto">
-                      {notifications.length === 0 ? (
-                        <div className="p-6 text-center">
-                          <p className="text-gray-400">No notifications</p>
-                        </div>
-                      ) : (
-                        <div className="divide-y divide-gray-700">
-                          {notifications.map(notification => (
-                            <div 
-                              key={notification.id} 
-                              className={`p-4 hover:bg-gray-750 ${!notification.read ? 'bg-gray-750' : ''} cursor-pointer`}
-                              onClick={() => markAsRead(notification.id)}
-                            >
-                              <div className="flex">
-                                <div className="flex-shrink-0 mr-3">
-                                  {getNotificationIcon(notification.type)}
-                                </div>
-                                <div className="flex-1">
-                                  <p className="text-sm font-medium text-white">{notification.title}</p>
-                                  <p className="text-sm text-gray-400 mt-0.5">{notification.message}</p>
-                                  <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
-                                </div>
-                                {!notification.read && (
-                                  <div className="ml-3 flex-shrink-0">
-                                    <div className="h-2 w-2 bg-blue-400 rounded-full"></div>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-3 border-t border-gray-700 text-center">
-                      <Link to="/dashboard/notifications" className="text-sm text-blue-400 hover:text-blue-300">
-                        View all notifications
-                      </Link>
-                    </div>
-                  </div>
-                )}
-              </div>
               
               {/* User menu */}
-              <div className="relative inline-block text-left">
-                <div className="flex items-center space-x-2">
-                  <img
-                    className="h-8 w-8 rounded-full object-cover border border-gray-700"
-                    src={user.avatar || '/images/avatar-placeholder.jpg'}
-                    alt={`${user.first_name} ${user.last_name}`}
-                  />
-                  <div className="hidden md:block text-left">
-                    <div className="text-sm font-medium text-white">{user.first_name} {user.last_name}</div>
-                    <div className="text-xs text-gray-400">{user.role === 'doctor' ? 'Doctor' : 'Patient'}</div>
-                  </div>
-                  
-                  {/* Role toggle button - for testing only */}
-                  <button 
-                    onClick={toggleUserRole}
-                    className="ml-3 p-1 bg-gray-700 text-xs text-gray-300 rounded hover:bg-gray-600 transition-colors"
-                    aria-label={`Switch to ${user.role === 'patient' ? 'doctor' : 'patient'} view`}
-                  >
-                    Switch to {user.role === 'patient' ? 'Doctor' : 'Patient'}
-                  </button>
-                </div>
+              <div className="relative">
+                <button className="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                  <img className="h-8 w-8 rounded-full" src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" />
+                </button>
               </div>
             </div>
           </div>
         </div>
         
-        {/* Main Content Area */}
-        <div className="flex-1 overflow-y-auto bg-gray-900">
-          <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-            <Routes>
-              <Route index element={<DashboardOverview user={user} setShowUploadModal={setShowUploadModal} />} />
-              <Route path="analyses" element={<DashboardAnalyses user={user} />} />
-              <Route path="history" element={<DashboardHistory user={user} />} />
-              <Route path="doctors" element={<DashboardDoctors user={user} />} />
-              <Route path="patients" element={<DashboardPatients user={user} />} />
-              <Route path="records" element={<DashboardRecords user={user} />} />
-              <Route path="subscription" element={<DashboardSubscription user={user} />} />
-              <Route path="settings" element={<DashboardSettings user={user} />} />
-              <Route path="profile" element={<DashboardProfile user={user} />} />
-              <Route path="support" element={<DashboardSupport user={user} />} />
-              <Route path="ai-training" element={<DashboardAITraining user={user} />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </div>
+        {/* Dashboard content */}
+        <div className="flex-1 overflow-auto bg-gray-50 p-4 md:p-6">
+          <Outlet />
         </div>
       </div>
       
-      {/* Upload Modal */}
-      {showUploadModal && (
-        <div className="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center p-4 bg-black bg-opacity-75">
-          <div className="relative max-w-4xl w-full mx-auto">
-            <button
-              onClick={() => setShowUploadModal(false)}
-              className="absolute top-2 right-2 p-2 text-gray-300 hover:text-white z-50"
-              aria-label="Close upload modal"
-            >
-              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <ImageUpload 
-              setShowModal={setShowUploadModal} 
-              apiKey={apiKey} 
-            />
-          </div>
-        </div>
+      {/* Google Health API Key Modal */}
+      {showAPIKeyModal && (
+        <APIKeyModal
+          onSubmit={handleAPIKeySubmit}
+          onSkip={skipApiKey}
+          onClose={() => setShowAPIKeyModal(false)}
+        />
       )}
-      
-      {/* API Key Modal */}
-      <APIKeyModal 
-        isOpen={showApiKeyModal} 
-        onClose={() => setShowApiKeyModal(false)} 
-        onSave={(key) => {
-          setApiKey(key);
-          setShowApiKeyModal(false);
-        }}
-      />
     </div>
   );
 };
