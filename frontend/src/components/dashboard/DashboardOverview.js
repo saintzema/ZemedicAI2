@@ -172,95 +172,95 @@ const DashboardOverview = () => {
       
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-6 shadow-md border border-blue-700">
+        <div className="bg-white rounded-lg p-6 shadow-md border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-blue-300 text-sm font-medium">Total Scans</p>
-              <p className="text-white text-2xl font-bold mt-1">{stats.totalScans}</p>
+              <p className="text-blue-600 text-sm font-medium">Total Scans</p>
+              <p className="text-gray-800 text-2xl font-bold mt-1">{stats.totalScans}</p>
             </div>
-            <div className="p-3 bg-blue-800 bg-opacity-50 rounded-full">
-              <svg className="h-6 w-6 text-blue-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-3 bg-blue-100 rounded-full">
+              <svg className="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <span className="text-green-400 flex items-center">
+            <span className="text-green-600 flex items-center">
               <svg className="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
               </svg>
               8% increase
             </span>
-            <span className="text-blue-300 ml-2">vs last month</span>
+            <span className="text-gray-500 ml-2">vs last month</span>
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 shadow-md border border-purple-700">
+        <div className="bg-white rounded-lg p-6 shadow-md border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-purple-300 text-sm font-medium">Analyses</p>
-              <p className="text-white text-2xl font-bold mt-1">{stats.completedAnalyses}</p>
+              <p className="text-purple-600 text-sm font-medium">Analyses</p>
+              <p className="text-gray-800 text-2xl font-bold mt-1">{stats.completedAnalyses}</p>
             </div>
-            <div className="p-3 bg-purple-800 bg-opacity-50 rounded-full">
-              <svg className="h-6 w-6 text-purple-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-3 bg-purple-100 rounded-full">
+              <svg className="h-6 w-6 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <span className="text-green-400 flex items-center">
+            <span className="text-green-600 flex items-center">
               <svg className="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
               </svg>
               12% increase
             </span>
-            <span className="text-purple-300 ml-2">vs last month</span>
+            <span className="text-gray-500 ml-2">vs last month</span>
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-red-900 to-red-800 rounded-lg p-6 shadow-md border border-red-700">
+        <div className="bg-white rounded-lg p-6 shadow-md border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-red-300 text-sm font-medium">Findings</p>
-              <p className="text-white text-2xl font-bold mt-1">{stats.findings}</p>
+              <p className="text-red-600 text-sm font-medium">Findings</p>
+              <p className="text-gray-800 text-2xl font-bold mt-1">{stats.findings}</p>
             </div>
-            <div className="p-3 bg-red-800 bg-opacity-50 rounded-full">
-              <svg className="h-6 w-6 text-red-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-3 bg-red-100 rounded-full">
+              <svg className="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <span className="text-red-400 flex items-center">
+            <span className="text-red-600 flex items-center">
               <svg className="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
               3% decrease
             </span>
-            <span className="text-red-300 ml-2">vs last month</span>
+            <span className="text-gray-500 ml-2">vs last month</span>
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-6 shadow-md border border-green-700">
+        <div className="bg-white rounded-lg p-6 shadow-md border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-300 text-sm font-medium">Appointments</p>
-              <p className="text-white text-2xl font-bold mt-1">{stats.upcomingAppointments}</p>
+              <p className="text-green-600 text-sm font-medium">Appointments</p>
+              <p className="text-gray-800 text-2xl font-bold mt-1">{stats.upcomingAppointments}</p>
             </div>
-            <div className="p-3 bg-green-800 bg-opacity-50 rounded-full">
-              <svg className="h-6 w-6 text-green-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-3 bg-green-100 rounded-full">
+              <svg className="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <span className="text-green-400 flex items-center">
+            <span className="text-green-600 flex items-center">
               <svg className="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
               </svg>
               5% increase
             </span>
-            <span className="text-green-300 ml-2">vs last month</span>
+            <span className="text-gray-500 ml-2">vs last month</span>
           </div>
         </div>
       </div>
