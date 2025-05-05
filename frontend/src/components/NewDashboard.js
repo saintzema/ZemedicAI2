@@ -251,7 +251,11 @@ const NewDashboard = () => {
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* Sidebar */}
-      <NewDashboardSidebar userRole={userRole} />
+      <NewDashboardSidebar 
+        userRole={userRole} 
+        isCollapsed={!sidebarOpen} 
+        toggleSidebar={toggleSidebar}
+      />
       
       {/* Main content */}
       <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isMobile ? 'ml-0' : 'ml-64'}`}>
