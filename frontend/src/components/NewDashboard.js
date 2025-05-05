@@ -115,8 +115,10 @@ const NewDashboard = () => {
   
   // Close the sidebar on route change on mobile
   useEffect(() => {
-    setSidebarOpen(false);
-  }, [location.pathname]);
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  }, [location.pathname, isMobile]);
   
   // Mark notification as read
   const markAsRead = (id) => {
