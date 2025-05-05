@@ -4,12 +4,13 @@ import axios from 'axios';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const DashboardHistory = ({ user }) => {
+const DashboardHistory = () => {
   // Scan history data
   const [scans, setScans] = useState([]);
   const [filteredScans, setFilteredScans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'patient');
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
