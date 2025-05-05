@@ -342,25 +342,25 @@ const DashboardOverview = () => {
       </div>
       
       {/* Health Recommendations */}
-      <div className="bg-gray-800 rounded-lg shadow-md border border-gray-700 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-700">
-          <h2 className="text-xl font-semibold text-white">Health Recommendations</h2>
+      <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-800">Health Recommendations</h2>
         </div>
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gray-750 p-4 rounded-lg border border-gray-700">
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
               <div className="flex items-start">
-                <div className="flex-shrink-0 p-2 bg-blue-900 bg-opacity-50 rounded-full">
-                  <svg className="h-6 w-6 text-blue-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex-shrink-0 p-2 bg-blue-100 rounded-full">
+                  <svg className="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                   </svg>
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-white font-medium">Hydration Reminder</h3>
-                  <p className="mt-1 text-gray-400 text-sm">
+                  <h3 className="text-gray-800 font-medium">Hydration Reminder</h3>
+                  <p className="mt-1 text-gray-600 text-sm">
                     Staying hydrated is essential for kidney health. Aim for 8-10 glasses of water daily.
                   </p>
-                  <a href="#" className="mt-2 inline-flex text-sm text-blue-400 hover:text-blue-300">
+                  <a href="#" className="mt-2 inline-flex text-sm text-blue-600 hover:text-blue-800">
                     Learn more
                     <svg className="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -370,20 +370,20 @@ const DashboardOverview = () => {
               </div>
             </div>
             
-            <div className="bg-gray-750 p-4 rounded-lg border border-gray-700">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-100">
               <div className="flex items-start">
-                <div className="flex-shrink-0 p-2 bg-green-900 bg-opacity-50 rounded-full">
-                  <svg className="h-6 w-6 text-green-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex-shrink-0 p-2 bg-green-100 rounded-full">
+                  <svg className="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-white font-medium">Vision Exercises</h3>
-                  <p className="mt-1 text-gray-400 text-sm">
+                  <h3 className="text-gray-800 font-medium">Vision Exercises</h3>
+                  <p className="mt-1 text-gray-600 text-sm">
                     Take regular screen breaks using the 20-20-20 rule: every 20 minutes, look at something 20 feet away for 20 seconds.
                   </p>
-                  <a href="#" className="mt-2 inline-flex text-sm text-blue-400 hover:text-blue-300">
+                  <a href="#" className="mt-2 inline-flex text-sm text-blue-600 hover:text-blue-800">
                     Learn more
                     <svg className="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -393,19 +393,19 @@ const DashboardOverview = () => {
               </div>
             </div>
             
-            <div className="bg-gray-750 p-4 rounded-lg border border-gray-700">
+            <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
               <div className="flex items-start">
-                <div className="flex-shrink-0 p-2 bg-purple-900 bg-opacity-50 rounded-full">
-                  <svg className="h-6 w-6 text-purple-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex-shrink-0 p-2 bg-purple-100 rounded-full">
+                  <svg className="h-6 w-6 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656.126-1.283.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656-.126-1.283-.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-white font-medium">Social Wellness</h3>
-                  <p className="mt-1 text-gray-400 text-sm">
+                  <h3 className="text-gray-800 font-medium">Social Wellness</h3>
+                  <p className="mt-1 text-gray-600 text-sm">
                     Maintaining social connections is crucial for mental health. Try to connect with friends or family at least once a week.
                   </p>
-                  <a href="#" className="mt-2 inline-flex text-sm text-blue-400 hover:text-blue-300">
+                  <a href="#" className="mt-2 inline-flex text-sm text-blue-600 hover:text-blue-800">
                     Learn more
                     <svg className="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -415,19 +415,19 @@ const DashboardOverview = () => {
               </div>
             </div>
             
-            <div className="bg-gray-750 p-4 rounded-lg border border-gray-700">
+            <div className="bg-red-50 p-4 rounded-lg border border-red-100">
               <div className="flex items-start">
-                <div className="flex-shrink-0 p-2 bg-red-900 bg-opacity-50 rounded-full">
-                  <svg className="h-6 w-6 text-red-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex-shrink-0 p-2 bg-red-100 rounded-full">
+                  <svg className="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-white font-medium">Heart Health</h3>
-                  <p className="mt-1 text-gray-400 text-sm">
+                  <h3 className="text-gray-800 font-medium">Heart Health</h3>
+                  <p className="mt-1 text-gray-600 text-sm">
                     Based on your recent scan, consider increasing cardio exercise to 150 minutes per week for optimal heart health.
                   </p>
-                  <a href="#" className="mt-2 inline-flex text-sm text-blue-400 hover:text-blue-300">
+                  <a href="#" className="mt-2 inline-flex text-sm text-blue-600 hover:text-blue-800">
                     Learn more
                     <svg className="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
