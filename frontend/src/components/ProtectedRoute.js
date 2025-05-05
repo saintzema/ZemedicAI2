@@ -11,28 +11,32 @@ const ProtectedRoute = ({ children }) => {
   
   useEffect(() => {
     const checkAuth = async () => {
+      setLoading(true);
+      
       // Check for token in localStorage or sessionStorage
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       
       if (!token) {
-        setIsAuthenticated(false);
         setLoading(false);
+        setIsAuthenticated(false);
         return;
       }
-      
+
       // If it's a demo token, we'll skip the validation
       if (token.startsWith('demo-token')) {
-        setIsAuthenticated(true);
+        console.log('Demo token detected, skipping validation');
         setLoading(false);
+        setIsAuthenticated(true);
         return;
       }
-      
+
       try {
-        // Verify token with backend
-        await axios.get(`${API}/auth/verify`, {
+        // Verify token with backend by getting current user
+        await axios.get(`${API}/users/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
+        console.log('Token validated successfully');
         setIsAuthenticated(true);
       } catch (error) {
         console.error('Token validation error:', error);
@@ -40,15 +44,16 @@ const ProtectedRoute = ({ children }) => {
         // Clear invalid token
         localStorage.removeItem('token');
         sessionStorage.removeItem('token');
+        localStorage.removeItem('userRole');
         
         setIsAuthenticated(false);
       } finally {
         setLoading(false);
       }
     };
-    
+
     checkAuth();
-  }, []);
+  }, [API]);
   
   if (loading) {
     // Loading state
