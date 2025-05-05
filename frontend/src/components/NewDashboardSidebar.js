@@ -235,7 +235,14 @@ const NewDashboardSidebar = ({ userRole = 'patient', isCollapsed = false, toggle
       {!isCollapsed && isMobile && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-30"
-          onClick={toggleSidebar}
+          onClick={() => {
+            console.log('Overlay clicked');
+            if (typeof toggleSidebar === 'function') {
+              toggleSidebar();
+            } else {
+              console.error('toggleSidebar is not a function');
+            }
+          }}
         ></div>
       )}
     </>
