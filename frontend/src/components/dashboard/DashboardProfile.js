@@ -469,15 +469,15 @@ const DashboardProfile = () => {
       
       {/* Address */}
       {activeSection === 'address' && (
-        <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-700">
-            <h2 className="text-lg font-medium text-white">Address</h2>
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-medium text-gray-800">Address</h2>
           </div>
           
           <div className="p-6">
             <div className="space-y-6">
               <div>
-                <label htmlFor="street" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="street" className="block text-sm font-medium text-gray-700 mb-1">
                   Street Address
                 </label>
                 {editMode ? (
@@ -486,16 +486,16 @@ const DashboardProfile = () => {
                     id="street"
                     value={profile.address.street}
                     onChange={(e) => handleInputChange('address', 'street', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 ) : (
-                  <p className="text-white">{profile.address.street}</p>
+                  <p className="text-gray-800">{profile.address.street}</p>
                 )}
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-400 mb-1">
+                  <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
                     City
                   </label>
                   {editMode ? (
@@ -504,15 +504,15 @@ const DashboardProfile = () => {
                       id="city"
                       value={profile.address.city}
                       onChange={(e) => handleInputChange('address', 'city', e.target.value)}
-                      className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     />
                   ) : (
-                    <p className="text-white">{profile.address.city}</p>
+                    <p className="text-gray-800">{profile.address.city}</p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="state" className="block text-sm font-medium text-gray-400 mb-1">
+                  <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
                     State / Province
                   </label>
                   {editMode ? (
@@ -521,15 +521,15 @@ const DashboardProfile = () => {
                       id="state"
                       value={profile.address.state}
                       onChange={(e) => handleInputChange('address', 'state', e.target.value)}
-                      className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     />
                   ) : (
-                    <p className="text-white">{profile.address.state}</p>
+                    <p className="text-gray-800">{profile.address.state}</p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="postal_code" className="block text-sm font-medium text-gray-400 mb-1">
+                  <label htmlFor="postal_code" className="block text-sm font-medium text-gray-700 mb-1">
                     Postal Code
                   </label>
                   {editMode ? (
@@ -538,15 +538,15 @@ const DashboardProfile = () => {
                       id="postal_code"
                       value={profile.address.postal_code}
                       onChange={(e) => handleInputChange('address', 'postal_code', e.target.value)}
-                      className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     />
                   ) : (
-                    <p className="text-white">{profile.address.postal_code}</p>
+                    <p className="text-gray-800">{profile.address.postal_code}</p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-400 mb-1">
+                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
                     Country
                   </label>
                   {editMode ? (
@@ -555,10 +555,10 @@ const DashboardProfile = () => {
                       id="country"
                       value={profile.address.country}
                       onChange={(e) => handleInputChange('address', 'country', e.target.value)}
-                      className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     />
                   ) : (
-                    <p className="text-white">{profile.address.country}</p>
+                    <p className="text-gray-800">{profile.address.country}</p>
                   )}
                 </div>
               </div>
