@@ -569,15 +569,15 @@ const DashboardProfile = () => {
       
       {/* Emergency Contact */}
       {activeSection === 'emergency' && (
-        <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-700">
-            <h2 className="text-lg font-medium text-white">Emergency Contact</h2>
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-medium text-gray-800">Emergency Contact</h2>
           </div>
           
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="emergency_name" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="emergency_name" className="block text-sm font-medium text-gray-700 mb-1">
                   Contact Name
                 </label>
                 {editMode ? (
@@ -586,15 +586,15 @@ const DashboardProfile = () => {
                     id="emergency_name"
                     value={profile.emergency_contact.name}
                     onChange={(e) => handleInputChange('emergency_contact', 'name', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 ) : (
-                  <p className="text-white">{profile.emergency_contact.name}</p>
+                  <p className="text-gray-800">{profile.emergency_contact.name}</p>
                 )}
               </div>
               
               <div>
-                <label htmlFor="emergency_relationship" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="emergency_relationship" className="block text-sm font-medium text-gray-700 mb-1">
                   Relationship
                 </label>
                 {editMode ? (
@@ -603,15 +603,15 @@ const DashboardProfile = () => {
                     id="emergency_relationship"
                     value={profile.emergency_contact.relationship}
                     onChange={(e) => handleInputChange('emergency_contact', 'relationship', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 ) : (
-                  <p className="text-white">{profile.emergency_contact.relationship}</p>
+                  <p className="text-gray-800">{profile.emergency_contact.relationship}</p>
                 )}
               </div>
               
               <div>
-                <label htmlFor="emergency_phone" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="emergency_phone" className="block text-sm font-medium text-gray-700 mb-1">
                   Phone Number
                 </label>
                 {editMode ? (
@@ -620,10 +620,10 @@ const DashboardProfile = () => {
                     id="emergency_phone"
                     value={profile.emergency_contact.phone}
                     onChange={(e) => handleInputChange('emergency_contact', 'phone', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 ) : (
-                  <p className="text-white">{profile.emergency_contact.phone}</p>
+                  <p className="text-gray-800">{profile.emergency_contact.phone}</p>
                 )}
               </div>
             </div>
