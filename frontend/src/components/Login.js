@@ -193,7 +193,7 @@ const Login = ({ onDemoLogin }) => {
               
               <div className="mt-6 grid grid-cols-2 gap-3">
                 <button
-                  onClick={() => loginWithDemoAccount('patient')}
+                  onClick={() => handleDemoLogin('patient')}
                   className="w-full inline-flex justify-center py-2 px-4 border border-gray-600 rounded-md shadow-sm bg-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-600"
                 >
                   <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -202,7 +202,7 @@ const Login = ({ onDemoLogin }) => {
                   Patient Demo
                 </button>
                 <button
-                  onClick={() => loginWithDemoAccount('doctor')}
+                  onClick={() => handleDemoLogin('doctor')}
                   className="w-full inline-flex justify-center py-2 px-4 border border-gray-600 rounded-md shadow-sm bg-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-600"
                 >
                   <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
