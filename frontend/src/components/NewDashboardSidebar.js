@@ -1,9 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { 
+  FaTachometerAlt, FaHistory, FaChartBar, FaFileMedical, 
+  FaUserMd, FaCog, FaSignOutAlt, FaUserFriends, FaBrain,
+  FaQuestion, FaHeadset, FaBars, FaTimes
+} from 'react-icons/fa';
 
-const NewDashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
+const NewDashboardSidebar = ({ userRole = 'patient' }) => {
   const location = useLocation();
-  const isDoctor = user?.role === 'doctor';
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  // Handle window resize for responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth >= 768) {
+        setIsCollapsed(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+    localStorage.removeItem('userRole');
+    window.location.href = '/login';
+  };
   
   // Navigation items
   const navigationItems = [
