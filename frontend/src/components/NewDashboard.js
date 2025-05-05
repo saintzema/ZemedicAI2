@@ -47,16 +47,21 @@ const NewDashboard = () => {
     }
   }, [userRole]);
   
-  // Demo user data
-  const getDemoUser = () => ({
-    id: 'user-1',
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john.doe@example.com',
-    role: 'patient', // 'patient' or 'doctor'
-    avatar: '/images/avatar-placeholder.jpg',
-    created_at: new Date().toISOString()
-  });
+  // Handle API key modal actions
+  const skipApiKey = () => {
+    localStorage.setItem('googleHealthApiKey', 'demo-api-key-123');
+    setUserHasAPIKey(true);
+    setShowAPIKeyModal(false);
+  };
+
+  // Function to handle role switching (for demo purposes)
+  const switchRole = () => {
+    const newRole = userRole === 'patient' ? 'doctor' : 'patient';
+    localStorage.setItem('userRole', newRole);
+    setUserRole(newRole);
+    // Force refresh dashboard sections
+    navigate('/dashboard');
+  };
   
   const [user, setUser] = useState(getDemoUser());
   
