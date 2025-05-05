@@ -162,7 +162,14 @@ const NewDashboardSidebar = ({ userRole = 'patient', isCollapsed = false, toggle
       {isMobile && (
         <div className="fixed top-4 left-4 z-50">
           <button 
-            onClick={toggleSidebar} 
+            onClick={() => {
+              console.log('Mobile hamburger clicked');
+              if (typeof toggleSidebar === 'function') {
+                toggleSidebar();
+              } else {
+                console.error('toggleSidebar is not a function');
+              }
+            }} 
             className="bg-blue-900 text-white p-2 rounded-md focus:outline-none"
           >
             {isCollapsed ? <FaBars size={24} /> : <FaTimes size={24} />}
@@ -175,7 +182,17 @@ const NewDashboardSidebar = ({ userRole = 'patient', isCollapsed = false, toggle
         <div className="p-4 flex justify-between items-center">
           {(!isCollapsed || isMobile) && <h2 className="text-xl font-semibold">ZemedicAI</h2>}
           {!isMobile && (
-            <button onClick={toggleSidebar} className="text-white focus:outline-none">
+            <button 
+              onClick={() => {
+                console.log('Desktop sidebar toggle clicked');
+                if (typeof toggleSidebar === 'function') {
+                  toggleSidebar();
+                } else {
+                  console.error('toggleSidebar is not a function');
+                }
+              }} 
+              className="text-white focus:outline-none"
+            >
               {isCollapsed ? <span>→</span> : <span>←</span>}
             </button>
           )}
