@@ -156,10 +156,10 @@ const DashboardOverview = () => {
   return (
     <div>
       <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
-        <h1 className="text-2xl font-bold text-white">Dashboard Overview</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Dashboard Overview</h1>
         <div className="mt-4 md:mt-0">
           <button
-            onClick={() => setShowUploadModal(true)}
+            onClick={handleNewScan}
             className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition-colors"
           >
             <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
