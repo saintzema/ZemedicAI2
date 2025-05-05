@@ -383,15 +383,15 @@ const DashboardProfile = () => {
       
       {/* Personal Information */}
       {activeSection === 'personal' && (
-        <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-700">
-            <h2 className="text-lg font-medium text-white">Personal Information</h2>
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-medium text-gray-800">Personal Information</h2>
           </div>
           
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                   Email
                 </label>
                 {editMode ? (
@@ -400,15 +400,15 @@ const DashboardProfile = () => {
                     id="email"
                     value={profile.email}
                     onChange={(e) => handleInputChange(null, 'email', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 ) : (
-                  <p className="text-white">{profile.email}</p>
+                  <p className="text-gray-800">{profile.email}</p>
                 )}
               </div>
               
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                   Phone Number
                 </label>
                 {editMode ? (
@@ -417,15 +417,15 @@ const DashboardProfile = () => {
                     id="phone"
                     value={profile.phone}
                     onChange={(e) => handleInputChange(null, 'phone', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 ) : (
-                  <p className="text-white">{profile.phone}</p>
+                  <p className="text-gray-800">{profile.phone}</p>
                 )}
               </div>
               
               <div>
-                <label htmlFor="dob" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="dob" className="block text-sm font-medium text-gray-700 mb-1">
                   Date of Birth
                 </label>
                 {editMode ? (
@@ -434,15 +434,15 @@ const DashboardProfile = () => {
                     id="dob"
                     value={profile.date_of_birth}
                     onChange={(e) => handleInputChange(null, 'date_of_birth', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 ) : (
-                  <p className="text-white">{formatDate(profile.date_of_birth)}</p>
+                  <p className="text-gray-800">{formatDate(profile.date_of_birth)}</p>
                 )}
               </div>
               
               <div>
-                <label htmlFor="gender" className="block text-sm font-medium text-gray-400 mb-1">
+                <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
                   Gender
                 </label>
                 {editMode ? (
@@ -450,7 +450,7 @@ const DashboardProfile = () => {
                     id="gender"
                     value={profile.gender}
                     onChange={(e) => handleInputChange(null, 'gender', e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="">Select Gender</option>
                     <option value="Male">Male</option>
@@ -459,7 +459,7 @@ const DashboardProfile = () => {
                     <option value="Prefer not to say">Prefer not to say</option>
                   </select>
                 ) : (
-                  <p className="text-white">{profile.gender}</p>
+                  <p className="text-gray-800">{profile.gender}</p>
                 )}
               </div>
             </div>
