@@ -56,43 +56,43 @@ const DashboardOverview = () => {
           },
           {
             id: 'scan-002',
-            patient_name: user.role === 'doctor' ? 'Robert Smith' : `${user.first_name} ${user.last_name}`,
+            patient_name: userRole === 'doctor' ? 'Robert Smith' : 'John Doe',
             scan_type: 'MRI',
             body_part: 'Brain',
             date: '2023-05-08T10:15:00Z',
             status: 'Completed',
             findings: 0,
-            doctor: user.role === 'doctor' ? 'Self' : 'Dr. David Chen'
+            doctor: userRole === 'doctor' ? 'Self' : 'Dr. David Chen'
           },
           {
             id: 'scan-003',
-            patient_name: user.role === 'doctor' ? 'Emma Davis' : `${user.first_name} ${user.last_name}`,
+            patient_name: userRole === 'doctor' ? 'Emma Davis' : 'John Doe',
             scan_type: 'CT Scan',
             body_part: 'Abdomen',
             date: '2023-05-05T09:00:00Z',
             status: 'Completed',
             findings: 1,
-            doctor: user.role === 'doctor' ? 'Self' : 'Dr. Sarah Johnson'
+            doctor: userRole === 'doctor' ? 'Self' : 'Dr. Sarah Johnson'
           },
           {
             id: 'scan-004',
-            patient_name: user.role === 'doctor' ? 'Michael Wilson' : `${user.first_name} ${user.last_name}`,
+            patient_name: userRole === 'doctor' ? 'Michael Wilson' : 'John Doe',
             scan_type: 'X-Ray',
             body_part: 'Shoulder',
             date: '2023-05-01T16:45:00Z',
             status: 'Completed',
             findings: 3,
-            doctor: user.role === 'doctor' ? 'Dr. James Lee' : 'Dr. Robert Anderson'
+            doctor: userRole === 'doctor' ? 'Dr. James Lee' : 'Dr. Robert Anderson'
           },
           {
             id: 'scan-005',
-            patient_name: user.role === 'doctor' ? 'Sophia Martinez' : `${user.first_name} ${user.last_name}`,
+            patient_name: userRole === 'doctor' ? 'Sophia Martinez' : 'John Doe',
             scan_type: 'Ultrasound',
             body_part: 'Thyroid',
             date: '2023-04-28T11:30:00Z',
             status: 'Completed',
             findings: 0,
-            doctor: user.role === 'doctor' ? 'Self' : 'Dr. Emily Wilson'
+            doctor: userRole === 'doctor' ? 'Self' : 'Dr. Emily Wilson'
           }
         ];
         
