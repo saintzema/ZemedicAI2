@@ -63,7 +63,20 @@ const NewDashboard = () => {
     navigate('/dashboard');
   };
   
+  // Demo user data
+  const getDemoUser = () => {
+    return {
+      id: 'demo-user-123',
+      name: 'Demo User',
+      email: 'demo@example.com',
+      role: localStorage.getItem('userRole') || 'patient',
+      profile_image: 'https://randomuser.me/api/portraits/women/44.jpg'
+    };
+  };
+  
   const [user, setUser] = useState(getDemoUser());
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   
   const [notifications, setNotifications] = useState([
     {
