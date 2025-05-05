@@ -1,18 +1,31 @@
-import { useState, useEffect } from "react";
-import "./App.css";
-import { BrowserRouter, Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
-import axios from "axios";
-import TypingAnimation from './components/TypingAnimation';
-import AfricaMap from './components/AfricaMap';
-import MedicalDisclaimer from './components/MedicalDisclaimer';
-import NewDashboard from './components/NewDashboard';
-import ImageUpload from './components/ImageUpload';
-import HospitalIntegration from './components/solutions/HospitalIntegration';
-import SolarPoweredBooths from './components/solutions/SolarPoweredBooths';
-import MobileApplications from './components/solutions/MobileApplications';
-import Pricing from './components/Pricing';
-import Login from './components/Login';
-import ProtectedRoute from './components/ProtectedRoute';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import './App.css';
+
+// Components
+import Login from "./components/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import NewDashboard from "./components/NewDashboard";
+import Home from "./components/Home";
+import About from "./components/About";
+import Features from "./components/Features";
+import Pricing from "./components/Pricing";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+
+// Dashboard Components
+import DashboardOverview from "./components/dashboard/DashboardOverview";
+import DashboardAnalyses from "./components/dashboard/DashboardAnalyses";
+import DashboardHistory from "./components/dashboard/DashboardHistory";
+import DashboardRecords from "./components/dashboard/DashboardRecords";
+import DashboardAITraining from "./components/dashboard/DashboardAITraining";
+import DashboardSettings from "./components/dashboard/DashboardSettings";
+import DashboardDoctors from "./components/dashboard/DashboardDoctors";
+import DashboardPatients from "./components/dashboard/DashboardPatients";
+import DashboardSupport from "./components/dashboard/DashboardSupport";
+import DashboardFAQs from "./components/dashboard/DashboardFAQs";
+import DashboardProfile from "./components/dashboard/DashboardProfile";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
