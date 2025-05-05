@@ -24,31 +24,33 @@ const Login = ({ setIsLoggedIn }) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    
+
     try {
-      // Attempt to login with backend
-      const response = await axios.post(`${API}/auth/login`, {
-        email,
-        password
-      });
+      // Make API call to authenticate using correct endpoint
+      const formData = new FormData();
+      formData.append('username', email);  // Backend expects 'username' parameter
+      formData.append('password', password);
       
+      const response = await axios.post(`${API}/token`, formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+
       // Store token
       const token = response.data.access_token;
-      if (rememberMe) {
-        localStorage.setItem('token', token);
-      } else {
-        sessionStorage.setItem('token', token);
-      }
+      const userRole = response.data.role || 'patient'; // Default to patient if role not specified
+      localStorage.setItem('token', token);
+      localStorage.setItem('userRole', userRole);
+      sessionStorage.setItem('token', token);
       
-      setIsLoggedIn(true);
+      console.log('Login successful, redirecting to dashboard');
+      // Redirect to dashboard
       navigate('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
-      if (err.response?.status === 401) {
-        setError('Invalid email or password');
-      } else {
-        setError('Failed to login. Please try again.');
-      }
+      setError('Invalid credentials. Please try again.');
+    } finally {
       setLoading(false);
     }
   };
