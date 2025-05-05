@@ -305,7 +305,7 @@ const DashboardProfile = () => {
               )}
             </h2>
             <p className="text-gray-400 mt-1">
-              {user.role === 'doctor' ? 'Doctor' : 'Patient'}
+              {userRole === 'doctor' ? 'Doctor' : 'Patient'}
             </p>
             <div className="mt-3 flex flex-wrap justify-center md:justify-start">
               <div className="flex items-center mr-4 text-sm text-gray-300 mb-2 md:mb-0">
