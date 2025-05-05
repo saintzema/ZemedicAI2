@@ -168,179 +168,69 @@ const NewDashboardSidebar = ({ userRole = 'patient' }) => {
   
   return (
     <>
-      {/* Mobile sidebar backdrop */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 z-40 bg-black bg-opacity-75 md:hidden" 
-          onClick={() => setSidebarOpen(false)}
-          aria-hidden="true"
-        ></div>
+      {/* Mobile hamburger menu */}
+      {isMobile && (
+        <div className="fixed top-4 left-4 z-50">
+          <button 
+            onClick={toggleSidebar} 
+            className="bg-blue-900 text-white p-2 rounded-md focus:outline-none"
+          >
+            {isCollapsed ? <FaBars size={24} /> : <FaTimes size={24} />}
+          </button>
+        </div>
       )}
       
-      {/* Sidebar for mobile */}
-      <div 
-        className={`fixed inset-y-0 left-0 flex flex-col z-50 max-w-xs w-full bg-gray-800 transform transition-transform ease-in-out duration-300 md:hidden ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-700">
-          <Link to="/" className="flex items-center">
-            <img 
-              className="h-8 w-auto" 
-              src="/images/logo.svg" 
-              alt="ZemedicAI" 
-            />
-            <span className="ml-2 text-white text-lg font-bold">ZemedicAI</span>
-          </Link>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            aria-label="Close sidebar"
-          >
-            <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+      {/* Sidebar */}
+      <div className={`bg-blue-900 text-white h-screen ${isCollapsed && isMobile ? '-translate-x-full' : ''} ${isMobile ? 'w-64' : (isCollapsed ? 'w-16' : 'w-64')} fixed left-0 transition-all duration-300 overflow-y-auto z-40 shadow-lg`}>
+        <div className="p-4 flex justify-between items-center">
+          {(!isCollapsed || isMobile) && <h2 className="text-xl font-semibold">ZemedicAI</h2>}
+          {!isMobile && (
+            <button onClick={toggleSidebar} className="text-white focus:outline-none">
+              {isCollapsed ? <span>→</span> : <span>←</span>}
+            </button>
+          )}
         </div>
         
-        <div className="flex-1 overflow-y-auto pt-2 pb-4">
-          <nav className="px-2 space-y-1">
-            {filteredNavigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`flex items-center px-3 py-2 text-base font-medium rounded-md group transition-colors duration-200 ${
-                  isLinkActive(item.path)
-                    ? 'bg-gray-900 text-white'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                }`}
-              >
-                <div className={`mr-3 flex-shrink-0 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400 group-hover:text-gray-300'}`}>
-                  {item.icon}
-                </div>
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-          
-          <div className="mt-8 px-2">
-            <h3 className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              Your Account
-            </h3>
-            <nav className="mt-2 space-y-1">
-              {secondaryNavigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`flex items-center px-3 py-2 text-base font-medium rounded-md group transition-colors duration-200 ${
-                    isLinkActive(item.path)
-                      ? 'bg-gray-900 text-white'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                  }`}
-                >
-                  <div className={`mr-3 flex-shrink-0 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400 group-hover:text-gray-300'}`}>
-                    {item.icon}
-                  </div>
-                  {item.name}
-                </Link>
-              ))}
-            </nav>
+        {/* User info section */}
+        {(!isCollapsed || isMobile) && (
+          <div className="px-4 py-2 border-t border-b border-blue-800">
+            <p className="text-sm opacity-70">Logged in as:</p>
+            <p className="font-medium capitalize">{userRole}</p>
           </div>
-        </div>
+        )}
         
-        <div className="p-4 border-t border-gray-700">
+        <div className="mt-4">
+          {navigationItems.map((item) => (
+            (item.roles.includes(userRole) || item.roles.includes('all')) && (
+              <Link
+                to={item.path}
+                key={item.path}
+                className={`flex items-center py-3 px-4 ${location.pathname === item.path ? 'bg-blue-800' : 'hover:bg-blue-800'} transition-colors duration-200`}
+              >
+                <div className="text-lg">{item.icon}</div>
+                {(!isCollapsed || isMobile) && <span className="ml-3">{item.label}</span>}
+              </Link>
+            )
+          ))}
+          
+          {/* Logout button */}
           <button 
-            onClick={() => {
-              localStorage.removeItem('token');
-              window.location.href = '/login';
-            }}
-            className="w-full flex items-center justify-center px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors duration-200"
+            onClick={logout} 
+            className="flex items-center w-full py-3 px-4 hover:bg-blue-800 transition-colors duration-200"
           >
-            <svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            Sign Out
+            <div className="text-lg"><FaSignOutAlt /></div>
+            {(!isCollapsed || isMobile) && <span className="ml-3">Logout</span>}
           </button>
         </div>
       </div>
       
-      {/* Sidebar for desktop */}
-      <div className="hidden md:flex md:flex-shrink-0">
-        <div className="flex flex-col w-64">
-          <div className="flex flex-col h-0 flex-1 bg-gray-800">
-            <div className="flex items-center h-16 px-4 border-b border-gray-700">
-              <Link to="/" className="flex items-center">
-                <img 
-                  className="h-8 w-auto" 
-                  src="/images/logo.svg" 
-                  alt="ZemedicAI" 
-                />
-                <span className="ml-2 text-white text-lg font-bold">ZemedicAI</span>
-              </Link>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto pt-5 pb-4">
-              <nav className="px-2 space-y-1">
-                {filteredNavigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    className={`flex items-center px-3 py-2 text-sm font-medium rounded-md group transition-colors duration-200 ${
-                      isLinkActive(item.path)
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                    }`}
-                  >
-                    <div className={`mr-3 flex-shrink-0 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400 group-hover:text-gray-300'}`}>
-                      {item.icon}
-                    </div>
-                    {item.name}
-                  </Link>
-                ))}
-              </nav>
-              
-              <div className="mt-8 px-2">
-                <h3 className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Your Account
-                </h3>
-                <nav className="mt-2 space-y-1">
-                  {secondaryNavigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.path}
-                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md group transition-colors duration-200 ${
-                        isLinkActive(item.path)
-                          ? 'bg-gray-900 text-white'
-                          : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                      }`}
-                    >
-                      <div className={`mr-3 flex-shrink-0 ${isLinkActive(item.path) ? 'text-white' : 'text-gray-400 group-hover:text-gray-300'}`}>
-                        {item.icon}
-                      </div>
-                      {item.name}
-                    </Link>
-                  ))}
-                </nav>
-              </div>
-            </div>
-            
-            <div className="p-4 border-t border-gray-700">
-              <button 
-                onClick={() => {
-                  localStorage.removeItem('token');
-                  window.location.href = '/login';
-                }}
-                className="w-full flex items-center justify-center px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors duration-200"
-              >
-                <svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                Sign Out
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Overlay for mobile when sidebar is open */}
+      {!isCollapsed && isMobile && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={toggleSidebar}
+        ></div>
+      )}
     </>
   );
 };
