@@ -1,22 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation, Link, Navigate } from 'react-router-dom';
-import axios from 'axios';
-
-// Import dashboard components
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import NewDashboardSidebar from './NewDashboardSidebar';
 import APIKeyModal from './APIKeyModal';
-import DashboardOverview from './dashboard/DashboardOverview';
-import DashboardAnalyses from './dashboard/DashboardAnalyses';
-import DashboardHistory from './dashboard/DashboardHistory';
-import DashboardDoctors from './dashboard/DashboardDoctors';
-import DashboardPatients from './dashboard/DashboardPatients';
-import DashboardRecords from './dashboard/DashboardRecords';
-import DashboardSubscription from './dashboard/DashboardSubscription';
-import DashboardSettings from './dashboard/DashboardSettings';
-import DashboardProfile from './dashboard/DashboardProfile';
-import DashboardSupport from './dashboard/DashboardSupport';
-import DashboardAITraining from './dashboard/DashboardAITraining';
-import ImageUpload from './ImageUpload';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
