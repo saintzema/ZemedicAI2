@@ -1,460 +1,885 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const DashboardAITraining = ({ user }) => {
-  const [activeTab, setActiveTab] = useState('models');
-  const [trainingProgress, setTrainingProgress] = useState(0);
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [trainingInProgress, setTrainingInProgress] = useState(false);
+  // Only allow doctors to access this component
+  if (user.role !== 'doctor') {
+    return (
+      <div className="bg-red-900 bg-opacity-20 border border-red-700 rounded-lg p-6 text-center">
+        <svg className="h-12 w-12 text-red-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <h3 className="text-xl font-medium text-white mb-2">Access Restricted</h3>
+        <p className="text-red-300 mb-4">This section is only available to users with doctor role.</p>
+        <button 
+          onClick={() => window.history.back()} 
+          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
   
-  // Mock data for AI models
-  const models = [
-    {
-      id: 'model-1',
-      name: 'Chest X-Ray Analysis Model',
-      type: 'Classification',
-      accuracy: 0.94,
-      lastTrained: '2023-06-10',
-      lastUsed: '2023-06-20',
-      trainingData: 1254,
-      status: 'active',
-      specialization: ['pneumonia', 'tuberculosis', 'lung cancer']
-    },
-    {
-      id: 'model-2',
-      name: 'Brain MRI Segmentation',
-      type: 'Segmentation',
-      accuracy: 0.89,
-      lastTrained: '2023-05-25',
-      lastUsed: '2023-06-18',
-      trainingData: 842,
-      status: 'active',
-      specialization: ['tumors', 'hemorrhage', 'infarction']
-    },
-    {
-      id: 'model-3',
-      name: 'Bone Fracture Detection',
-      type: 'Detection',
-      accuracy: 0.92,
-      lastTrained: '2023-04-15',
-      lastUsed: '2023-06-15',
-      trainingData: 976,
-      status: 'active',
-      specialization: ['fractures', 'dislocations']
-    },
-    {
-      id: 'model-4',
-      name: 'COVID-19 Detection',
-      type: 'Classification',
-      accuracy: 0.91,
-      lastTrained: '2023-03-30',
-      lastUsed: '2023-06-05',
-      trainingData: 1532,
-      status: 'inactive',
-      specialization: ['covid-19', 'pneumonia']
-    }
-  ];
+  // State for models
+  const [models, setModels] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedModel, setSelectedModel] = useState(null);
+  const [trainingJobs, setTrainingJobs] = useState([]);
+  const [showNewModelModal, setShowNewModelModal] = useState(false);
   
-  // Mock data for training jobs
-  const trainingJobs = [
-    {
-      id: 'job-1',
-      modelName: 'Chest X-Ray Analysis Model',
-      status: 'completed',
-      startDate: '2023-06-10',
-      endDate: '2023-06-11',
-      accuracy: 0.94,
-      improvement: '+0.02',
-      dataSize: 1254
-    },
-    {
-      id: 'job-2',
-      modelName: 'Brain MRI Segmentation',
-      status: 'completed',
-      startDate: '2023-05-25',
-      endDate: '2023-05-26',
-      accuracy: 0.89,
-      improvement: '+0.03',
-      dataSize: 842
-    },
-    {
-      id: 'job-3',
-      modelName: 'Custom Heart CT Analysis',
-      status: 'failed',
-      startDate: '2023-05-15',
-      endDate: '2023-05-15',
-      accuracy: null,
-      improvement: null,
-      dataSize: 324,
-      error: 'Insufficient data for model convergence'
-    },
-    {
-      id: 'job-4',
-      modelName: 'Bone Fracture Detection',
-      status: 'completed',
-      startDate: '2023-04-15',
-      endDate: '2023-04-16',
-      accuracy: 0.92,
-      improvement: '+0.04',
-      dataSize: 976
-    }
-  ];
+  // State for new model form
+  const [newModelData, setNewModelData] = useState({
+    name: '',
+    specialization: '',
+    datasetSize: '',
+    baseModel: 'ZemedicAI Core v2.1',
+    description: ''
+  });
   
-  // Simulate training progress
-  const startTraining = () => {
-    setTrainingInProgress(true);
-    setTrainingProgress(0);
+  // State for training progress simulation
+  const [simulatedTraining, setSimulatedTraining] = useState(null);
+  
+  // Fetch models data
+  useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        setLoading(true);
+        
+        // In a real application, we would fetch this data from the API
+        // For demo purposes, we'll use mock data
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Mock models data
+        const mockModels = [
+          {
+            id: 'model-001',
+            name: 'Pulmonary Analysis Model',
+            specialization: 'Chest X-rays',
+            version: '1.3',
+            status: 'active',
+            accuracy: 0.94,
+            created_at: '2023-03-15T10:30:00Z',
+            last_updated: '2023-05-20T14:45:00Z',
+            training_samples: 15600,
+            owner: user.first_name,
+            metrics: {
+              sensitivity: 0.92,
+              specificity: 0.95,
+              f1_score: 0.93,
+              auc: 0.96
+            },
+            capabilities: [
+              'Pneumonia detection',
+              'Tuberculosis screening',
+              'Nodule identification',
+              'Pleural effusion analysis'
+            ]
+          },
+          {
+            id: 'model-002',
+            name: 'Neurological Assessment',
+            specialization: 'Brain MRI',
+            version: '2.1',
+            status: 'active',
+            accuracy: 0.91,
+            created_at: '2023-01-10T09:15:00Z',
+            last_updated: '2023-05-18T11:20:00Z',
+            training_samples: 12800,
+            owner: user.first_name,
+            metrics: {
+              sensitivity: 0.89,
+              specificity: 0.93,
+              f1_score: 0.91,
+              auc: 0.94
+            },
+            capabilities: [
+              'Tumor detection',
+              'Stroke assessment',
+              'Hemorrhage identification',
+              'White matter lesion analysis'
+            ]
+          },
+          {
+            id: 'model-003',
+            name: 'Musculoskeletal Analysis',
+            specialization: 'Joint X-rays',
+            version: '1.0',
+            status: 'training',
+            accuracy: 0.87,
+            created_at: '2023-05-01T16:45:00Z',
+            last_updated: '2023-05-01T16:45:00Z',
+            training_samples: 9200,
+            owner: user.first_name,
+            metrics: {
+              sensitivity: 0.85,
+              specificity: 0.88,
+              f1_score: 0.86,
+              auc: 0.90
+            },
+            capabilities: [
+              'Fracture detection',
+              'Arthritis assessment',
+              'Joint space measurement',
+              'Bone density analysis'
+            ]
+          }
+        ];
+        
+        // Mock training jobs
+        const mockTrainingJobs = [
+          {
+            id: 'job-001',
+            model_id: 'model-003',
+            status: 'in_progress',
+            progress: 68,
+            started_at: '2023-05-22T09:30:00Z',
+            estimated_completion: '2023-05-23T15:00:00Z',
+            epochs_completed: 17,
+            total_epochs: 25,
+            loss: 0.0831,
+            accuracy: 0.872
+          },
+          {
+            id: 'job-002',
+            model_id: 'model-001',
+            status: 'completed',
+            progress: 100,
+            started_at: '2023-05-19T14:15:00Z',
+            completed_at: '2023-05-20T06:30:00Z',
+            epochs_completed: 30,
+            total_epochs: 30,
+            loss: 0.0518,
+            accuracy: 0.943
+          },
+          {
+            id: 'job-003',
+            model_id: 'model-002',
+            status: 'completed',
+            progress: 100,
+            started_at: '2023-05-17T11:45:00Z',
+            completed_at: '2023-05-18T04:20:00Z',
+            epochs_completed: 35,
+            total_epochs: 35,
+            loss: 0.0624,
+            accuracy: 0.912
+          }
+        ];
+        
+        setModels(mockModels);
+        setTrainingJobs(mockTrainingJobs);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching models:', err);
+        setError('Failed to load AI models');
+        setLoading(false);
+      }
+    };
     
-    const interval = setInterval(() => {
-      setTrainingProgress(prevProgress => {
-        if (prevProgress >= 100) {
-          clearInterval(interval);
-          setTrainingInProgress(false);
-          return 100;
-        }
-        return prevProgress + 10;
-      });
-    }, 2000);
-  };
+    fetchModels();
+  }, [user]);
   
-  // Function to get status badge color
-  const getStatusColor = (status) => {
-    switch(status) {
-      case 'active': return 'bg-green-900 text-green-300';
-      case 'inactive': return 'bg-red-900 text-red-300';
-      case 'training': return 'bg-blue-900 text-blue-300';
-      case 'completed': return 'bg-green-900 text-green-300';
-      case 'failed': return 'bg-red-900 text-red-300';
-      case 'pending': return 'bg-yellow-900 text-yellow-300';
-      default: return 'bg-gray-700 text-gray-300';
-    }
-  };
-  
-  // Format accuracy as percentage
-  const formatAccuracy = (accuracy) => {
-    return accuracy ? `${(accuracy * 100).toFixed(1)}%` : 'N/A';
-  };
-  
-  // Format date
+  // Format date for display
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    if (!dateString) return '';
+    
+    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
   
+  // Calculate time remaining
+  const calculateTimeRemaining = (estimatedCompletion) => {
+    const now = new Date();
+    const completionDate = new Date(estimatedCompletion);
+    const diffMs = completionDate - now;
+    
+    if (diffMs <= 0) return 'Completing soon...';
+    
+    const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (diffHrs > 0) {
+      return `${diffHrs}h ${diffMins}m remaining`;
+    } else {
+      return `${diffMins}m remaining`;
+    }
+  };
+  
+  // Handle new model form input change
+  const handleNewModelInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewModelData({
+      ...newModelData,
+      [name]: value
+    });
+  };
+  
+  // Create new model
+  const handleCreateModel = () => {
+    // Validate form
+    if (!newModelData.name || !newModelData.specialization || !newModelData.baseModel) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    
+    // In a real application, we would send the data to the API
+    // For demo purposes, we'll just simulate adding a new model
+    
+    const newModel = {
+      id: `model-${(models.length + 1).toString().padStart(3, '0')}`,
+      name: newModelData.name,
+      specialization: newModelData.specialization,
+      version: '1.0',
+      status: 'draft',
+      accuracy: 0,
+      created_at: new Date().toISOString(),
+      last_updated: new Date().toISOString(),
+      training_samples: parseInt(newModelData.datasetSize) || 0,
+      owner: user.first_name,
+      metrics: {
+        sensitivity: 0,
+        specificity: 0,
+        f1_score: 0,
+        auc: 0
+      },
+      capabilities: [],
+      description: newModelData.description
+    };
+    
+    // Add new model to state
+    setModels([...models, newModel]);
+    
+    // Reset form and close modal
+    setNewModelData({
+      name: '',
+      specialization: '',
+      datasetSize: '',
+      baseModel: 'ZemedicAI Core v2.1',
+      description: ''
+    });
+    setShowNewModelModal(false);
+    
+    // Select the new model
+    setSelectedModel(newModel);
+  };
+  
+  // Start training simulation
+  const startTraining = (modelId) => {
+    const model = models.find(m => m.id === modelId);
+    if (!model) return;
+    
+    // Update model status
+    const updatedModels = models.map(m => 
+      m.id === modelId ? { ...m, status: 'training' } : m
+    );
+    setModels(updatedModels);
+    
+    // Create new training job
+    const newJob = {
+      id: `job-${(trainingJobs.length + 1).toString().padStart(3, '0')}`,
+      model_id: modelId,
+      status: 'in_progress',
+      progress: 0,
+      started_at: new Date().toISOString(),
+      estimated_completion: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
+      epochs_completed: 0,
+      total_epochs: 30,
+      loss: 0.5,
+      accuracy: 0.5
+    };
+    
+    setTrainingJobs([newJob, ...trainingJobs]);
+    
+    // Start simulation
+    setSimulatedTraining({
+      jobId: newJob.id,
+      modelId: modelId,
+      interval: setInterval(() => {
+        setTrainingJobs(prevJobs => {
+          const updatedJobs = prevJobs.map(job => {
+            if (job.id === newJob.id) {
+              const newProgress = Math.min(job.progress + 1, 100);
+              const epochsCompleted = Math.floor((newProgress / 100) * job.total_epochs);
+              const accuracy = 0.5 + (newProgress / 100) * 0.4; // Starts at 0.5, goes up to 0.9
+              const loss = 0.5 - (newProgress / 100) * 0.45; // Starts at 0.5, goes down to 0.05
+              
+              return {
+                ...job,
+                progress: newProgress,
+                epochs_completed: epochsCompleted,
+                accuracy: accuracy,
+                loss: loss,
+                status: newProgress === 100 ? 'completed' : 'in_progress',
+                completed_at: newProgress === 100 ? new Date().toISOString() : undefined
+              };
+            }
+            return job;
+          });
+          
+          // If training is complete, update model
+          const job = updatedJobs.find(j => j.id === newJob.id);
+          if (job && job.progress === 100) {
+            clearInterval(simulatedTraining.interval);
+            setSimulatedTraining(null);
+            
+            // Update model status and metrics
+            setModels(prevModels => prevModels.map(m => 
+              m.id === modelId ? {
+                ...m,
+                status: 'active',
+                accuracy: job.accuracy,
+                last_updated: job.completed_at,
+                metrics: {
+                  sensitivity: job.accuracy - 0.02,
+                  specificity: job.accuracy + 0.01,
+                  f1_score: job.accuracy - 0.01,
+                  auc: job.accuracy + 0.02
+                }
+              } : m
+            ));
+          }
+          
+          return updatedJobs;
+        });
+      }, 500) // Update every 500ms for demo
+    });
+  };
+  
+  if (loading) {
+    return (
+      <div className="animate-pulse">
+        <div className="h-8 bg-gray-800 rounded mb-6"></div>
+        <div className="h-64 bg-gray-800 rounded-lg mb-6"></div>
+        <div className="h-64 bg-gray-800 rounded-lg"></div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="bg-red-900 bg-opacity-20 border border-red-700 rounded-lg p-6 text-center">
+        <svg className="h-12 w-12 text-red-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <h3 className="text-xl font-medium text-white mb-2">Failed to Load AI Models</h3>
+        <p className="text-red-300 mb-4">{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+  
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
+    <div>
+      <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-white">AI Model Training</h2>
-          <p className="text-gray-400 text-sm">Customize and train AI models for your specific needs</p>
+          <h1 className="text-2xl font-bold text-white mb-2">AI Model Training</h1>
+          <p className="text-gray-400">
+            Create and train custom AI models for medical imaging analysis
+          </p>
         </div>
-        
-        <div className="flex space-x-2">
-          <button 
-            onClick={() => setShowUploadModal(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-colors flex items-center space-x-1"
+        <div className="mt-4 md:mt-0">
+          <button
+            onClick={() => setShowNewModelModal(true)}
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition-colors"
           >
-            <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            <svg className="h-4 w-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            <span>Create New Model</span>
-          </button>
-          <button className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-md transition-colors flex items-center space-x-1">
-            <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Export Metrics</span>
+            New Model
           </button>
         </div>
       </div>
       
-      {/* Tabs */}
-      <div className="border-b border-gray-700">
-        <nav className="flex space-x-8">
-          <button 
-            onClick={() => setActiveTab('models')}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'models' 
-                ? 'border-blue-500 text-blue-400' 
-                : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-            }`}
-          >
-            My Models
-          </button>
-          <button 
-            onClick={() => setActiveTab('jobs')}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'jobs' 
-                ? 'border-blue-500 text-blue-400' 
-                : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-            }`}
-          >
-            Training Jobs
-          </button>
-          <button 
-            onClick={() => setActiveTab('datasets')}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'datasets' 
-                ? 'border-blue-500 text-blue-400' 
-                : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-            }`}
-          >
-            Datasets
-          </button>
-        </nav>
-      </div>
-      
-      {/* Models Tab */}
-      {activeTab === 'models' && (
-        <div className="space-y-6">
-          {trainingInProgress && (
-            <div className="bg-blue-900 bg-opacity-20 rounded-xl p-6 border border-blue-800">
-              <div className="flex flex-col md:flex-row items-center justify-between">
-                <div className="mb-4 md:mb-0">
-                  <h3 className="text-lg font-medium text-white">Model Training in Progress</h3>
-                  <p className="text-blue-300 mt-1">
-                    Custom Chest X-Ray Analysis Model - Estimated time remaining: ~{Math.ceil((100 - trainingProgress) / 10) * 2} minutes
-                  </p>
-                </div>
-                <div className="w-full md:w-64">
-                  <div className="h-4 bg-gray-700 rounded-full overflow-hidden">
-                    <div 
-                      className="h-4 bg-blue-600 rounded-full" 
-                      style={{ width: `${trainingProgress}%` }}
-                    ></div>
+      {selectedModel ? (
+        <div>
+          {/* Model details */}
+          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden mb-6">
+            <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+              <div className="flex items-center">
+                <h2 className="text-lg font-medium text-white">Model Details</h2>
+                <span className={`ml-3 px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  selectedModel.status === 'active' ? 'bg-green-900 text-green-300' :
+                  selectedModel.status === 'training' ? 'bg-yellow-900 text-yellow-300' :
+                  'bg-gray-700 text-gray-300'
+                }`}>
+                  {selectedModel.status.charAt(0).toUpperCase() + selectedModel.status.slice(1)}
+                </span>
+              </div>
+              <button
+                onClick={() => setSelectedModel(null)}
+                className="text-gray-400 hover:text-white"
+              >
+                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="md:col-span-2">
+                  <div className="flex items-center mb-4">
+                    <h3 className="text-xl font-bold text-white">{selectedModel.name}</h3>
+                    <span className="ml-2 text-sm text-gray-400">v{selectedModel.version}</span>
                   </div>
-                  <p className="text-gray-400 text-sm text-right mt-1">{trainingProgress}% complete</p>
+                  
+                  <div className="mb-6">
+                    <p className="text-gray-300">
+                      {selectedModel.description || `This model is specialized in analyzing ${selectedModel.specialization} images, providing accurate diagnostics and identifying abnormalities with high precision.`}
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <div className="bg-gray-750 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">Specialization</p>
+                      <p className="text-white font-medium">{selectedModel.specialization}</p>
+                    </div>
+                    <div className="bg-gray-750 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">Training Samples</p>
+                      <p className="text-white font-medium">{selectedModel.training_samples.toLocaleString()}</p>
+                    </div>
+                    <div className="bg-gray-750 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">Created</p>
+                      <p className="text-white font-medium">{formatDate(selectedModel.created_at)}</p>
+                    </div>
+                    <div className="bg-gray-750 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">Last Updated</p>
+                      <p className="text-white font-medium">{formatDate(selectedModel.last_updated)}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <h4 className="text-md font-medium text-white mb-3">Model Capabilities</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedModel.capabilities.map((capability, index) => (
+                        <span 
+                          key={index}
+                          className="px-3 py-1 bg-blue-900 bg-opacity-40 text-blue-300 rounded-full text-sm"
+                        >
+                          {capability}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-3">
+                    {selectedModel.status !== 'training' && (
+                      <button
+                        onClick={() => startTraining(selectedModel.id)}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-500 transition-colors"
+                      >
+                        Start Training
+                      </button>
+                    )}
+                    <button
+                      className="px-4 py-2 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600 hover:text-white transition-colors"
+                    >
+                      Export Model
+                    </button>
+                    <button
+                      className="px-4 py-2 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600 hover:text-white transition-colors"
+                    >
+                      Edit Configuration
+                    </button>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="text-md font-medium text-white mb-3">Performance Metrics</h4>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">Accuracy</span>
+                        <span className="text-sm text-white">{(selectedModel.accuracy * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-blue-500 rounded-full"
+                          style={{ width: `${selectedModel.accuracy * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">Sensitivity</span>
+                        <span className="text-sm text-white">{(selectedModel.metrics.sensitivity * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-green-500 rounded-full"
+                          style={{ width: `${selectedModel.metrics.sensitivity * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">Specificity</span>
+                        <span className="text-sm text-white">{(selectedModel.metrics.specificity * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-yellow-500 rounded-full"
+                          style={{ width: `${selectedModel.metrics.specificity * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">F1 Score</span>
+                        <span className="text-sm text-white">{(selectedModel.metrics.f1_score * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-purple-500 rounded-full"
+                          style={{ width: `${selectedModel.metrics.f1_score * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">AUC-ROC</span>
+                        <span className="text-sm text-white">{(selectedModel.metrics.auc * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-pink-500 rounded-full"
+                          style={{ width: `${selectedModel.metrics.auc * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {selectedModel.status === 'active' && (
+                    <div className="mt-6 p-4 bg-green-900 bg-opacity-20 border border-green-700 rounded-lg">
+                      <div className="flex items-start">
+                        <svg className="h-5 w-5 text-green-400 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <div>
+                          <p className="text-white font-medium">Model Ready for Use</p>
+                          <p className="text-sm text-green-300 mt-1">
+                            This model is trained and ready to analyze medical images.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {selectedModel.status === 'training' && (
+                    <div className="mt-6 p-4 bg-yellow-900 bg-opacity-20 border border-yellow-700 rounded-lg">
+                      <div className="flex items-start">
+                        <svg className="h-5 w-5 text-yellow-400 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                          <p className="text-white font-medium">Training in Progress</p>
+                          <p className="text-sm text-yellow-300 mt-1">
+                            This model is currently being trained. Performance metrics will update once training is complete.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {selectedModel.status === 'draft' && (
+                    <div className="mt-6 p-4 bg-blue-900 bg-opacity-20 border border-blue-700 rounded-lg">
+                      <div className="flex items-start">
+                        <svg className="h-5 w-5 text-blue-400 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                          <p className="text-white font-medium">Model in Draft Stage</p>
+                          <p className="text-sm text-blue-300 mt-1">
+                            This model is in draft stage. Start training to analyze medical images.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-          )}
+          </div>
           
-          <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+          {/* Training Jobs */}
+          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-700">
+              <h2 className="text-lg font-medium text-white">Training History</h2>
+            </div>
+            
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-700">
                 <thead className="bg-gray-750">
                   <tr>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Model Name
+                      Started
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Type
+                      Status
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      Progress
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      Epochs
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                       Accuracy
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Last Trained
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th scope="col" className="relative px-6 py-3">
-                      <span className="sr-only">Actions</span>
+                      Loss
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-gray-800 divide-y divide-gray-700">
-                  {models.map(model => (
-                    <tr key={model.id} className="hover:bg-gray-750">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <svg className="h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                          </svg>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-white">{model.name}</div>
-                            <div className="text-sm text-gray-400">
-                              {model.specialization.join(', ')}
+                  {trainingJobs
+                    .filter(job => job.model_id === selectedModel.id)
+                    .map((job) => (
+                      <tr key={job.id} className="hover:bg-gray-750">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-white">{formatDate(job.started_at)}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            job.status === 'completed' ? 'bg-green-900 text-green-300' :
+                            job.status === 'in_progress' ? 'bg-yellow-900 text-yellow-300' :
+                            'bg-red-900 text-red-300'
+                          }`}>
+                            {job.status === 'completed' ? 'Completed' :
+                             job.status === 'in_progress' ? 'In Progress' :
+                             'Failed'}
+                          </span>
+                          {job.status === 'in_progress' && (
+                            <div className="text-xs text-gray-400 mt-1">
+                              {calculateTimeRemaining(job.estimated_completion)}
                             </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-full bg-gray-700 rounded-full h-2.5 mr-2 max-w-[150px]">
+                              <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${job.progress}%` }}></div>
+                            </div>
+                            <span className="text-sm text-white">{job.progress}%</span>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-300">{model.type}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-300">{formatAccuracy(model.accuracy)}</div>
-                        <div className="text-xs text-gray-400">{model.trainingData} samples</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-300">{formatDate(model.lastTrained)}</div>
-                        <div className="text-xs text-gray-400">Last used: {formatDate(model.lastUsed)}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(model.status)}`}>
-                          {model.status.charAt(0).toUpperCase() + model.status.slice(1)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button 
-                          onClick={startTraining}
-                          disabled={trainingInProgress}
-                          className="text-blue-400 hover:text-blue-300 mr-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          Retrain
-                        </button>
-                        <button className="text-blue-400 hover:text-blue-300 mr-3">
-                          Edit
-                        </button>
-                        <button className="text-red-400 hover:text-red-300">
-                          Delete
-                        </button>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-white">{job.epochs_completed} / {job.total_epochs}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-white">{(job.accuracy * 100).toFixed(1)}%</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-white">{job.loss.toFixed(4)}</div>
+                        </td>
+                      </tr>
+                    ))}
+                  
+                  {!trainingJobs.some(job => job.model_id === selectedModel.id) && (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-4 text-center text-gray-400">
+                        No training history for this model
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
-          
-          {/* Performance Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-              <h3 className="text-lg font-medium text-white mb-4">Accuracy by Model</h3>
-              <div className="space-y-4">
-                {models
-                  .filter(model => model.status === 'active')
-                  .sort((a, b) => b.accuracy - a.accuracy)
-                  .map(model => (
-                    <div key={model.id}>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm text-gray-300">{model.name}</span>
-                        <span className="text-sm text-gray-300">{formatAccuracy(model.accuracy)}</span>
-                      </div>
-                      <div className="w-full bg-gray-700 rounded-full h-2.5">
-                        <div 
-                          className="bg-blue-600 h-2.5 rounded-full" 
-                          style={{ width: `${model.accuracy * 100}%` }}
-                        ></div>
-                      </div>
+        </div>
+      ) : (
+        <div>
+          {/* AI Models Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            {models.map((model) => (
+              <div 
+                key={model.id}
+                onClick={() => setSelectedModel(model)}
+                className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:border-blue-500 cursor-pointer transition-colors"
+              >
+                <div className="px-6 py-4 border-b border-gray-700">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-medium text-white truncate">{model.name}</h3>
+                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      model.status === 'active' ? 'bg-green-900 text-green-300' :
+                      model.status === 'training' ? 'bg-yellow-900 text-yellow-300' :
+                      'bg-gray-700 text-gray-300'
+                    }`}>
+                      {model.status.charAt(0).toUpperCase() + model.status.slice(1)}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="p-6">
+                  <div className="mb-4">
+                    <p className="text-sm text-gray-400">Specialization</p>
+                    <p className="text-white font-medium">{model.specialization}</p>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm text-gray-400">Accuracy</span>
+                      <span className="text-sm text-white">{(model.accuracy * 100).toFixed(1)}%</span>
                     </div>
-                  ))
-                }
+                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-blue-500 rounded-full"
+                        style={{ width: `${model.accuracy * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <p className="text-sm text-gray-400">Training Samples</p>
+                    <p className="text-white font-medium">{model.training_samples.toLocaleString()}</p>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <p className="text-sm text-gray-400">Last Updated</p>
+                    <p className="text-white font-medium">{formatDate(model.last_updated)}</p>
+                  </div>
+                  
+                  <div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedModel(model);
+                      }}
+                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition-colors"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
             
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-              <h3 className="text-lg font-medium text-white mb-4">Usage Statistics</h3>
-              <div className="space-y-6">
-                <div>
-                  <p className="text-sm text-gray-400 mb-1">Total Analyses</p>
-                  <p className="text-2xl text-white">1,245</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400 mb-1">Average Processing Time</p>
-                  <p className="text-2xl text-white">24.3s</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400 mb-1">Total Training Hours</p>
-                  <p className="text-2xl text-white">68h</p>
-                </div>
+            {/* Create New Model Card */}
+            <div 
+              onClick={() => setShowNewModelModal(true)}
+              className="bg-gray-800 rounded-lg border border-dashed border-gray-600 overflow-hidden hover:border-blue-500 cursor-pointer transition-colors p-6 flex flex-col items-center justify-center text-center h-[357px]"
+            >
+              <div className="p-4 bg-blue-900 bg-opacity-20 rounded-full mb-4">
+                <svg className="h-8 w-8 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
               </div>
-            </div>
-            
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-              <h3 className="text-lg font-medium text-white mb-4">Quick Actions</h3>
-              <div className="space-y-4">
-                <button 
-                  onClick={startTraining}
-                  disabled={trainingInProgress}
-                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-colors disabled:opacity-70 disabled:bg-blue-700 flex items-center justify-center"
-                >
-                  <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                  Start New Training
-                </button>
-                <button className="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-md transition-colors flex items-center justify-center">
-                  <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                  </svg>
-                  Import Pre-trained Model
-                </button>
-                <button className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-md transition-colors flex items-center justify-center">
-                  <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                  </svg>
-                  Create AI Ensemble
-                </button>
-              </div>
+              <h3 className="text-lg font-medium text-white mb-2">Create New Model</h3>
+              <p className="text-gray-400 mb-4">
+                Start building a custom AI model tailored to your specific needs
+              </p>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition-colors"
+              >
+                Get Started
+              </button>
             </div>
           </div>
-        </div>
-      )}
-      
-      {/* Training Jobs Tab */}
-      {activeTab === 'jobs' && (
-        <div className="space-y-6">
-          <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+          
+          {/* Training Jobs */}
+          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-700">
+              <h2 className="text-lg font-medium text-white">Recent Training Jobs</h2>
+            </div>
+            
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-700">
                 <thead className="bg-gray-750">
                   <tr>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Job ID
+                      Model
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Model Name
+                      Started
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                       Status
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Training Period
+                      Progress
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Performance
+                      Accuracy
                     </th>
-                    <th scope="col" className="relative px-6 py-3">
-                      <span className="sr-only">Actions</span>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-gray-800 divide-y divide-gray-700">
-                  {trainingJobs.map(job => (
-                    <tr key={job.id} className="hover:bg-gray-750">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-300">{job.id}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-white">{job.modelName}</div>
-                        <div className="text-xs text-gray-400">{job.dataSize} samples</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(job.status)}`}>
-                          {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-300">{formatDate(job.startDate)}</div>
-                        <div className="text-xs text-gray-400">
-                          {job.endDate ? `to ${formatDate(job.endDate)}` : 'In progress'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {job.accuracy ? (
-                          <div>
-                            <div className="text-sm text-gray-300">{formatAccuracy(job.accuracy)}</div>
-                            <div className={`text-xs ${
-                              job.improvement.startsWith('+') ? 'text-green-400' : 'text-red-400'
-                            }`}>
-                              {job.improvement}
+                  {trainingJobs.map((job) => {
+                    const model = models.find(m => m.id === job.model_id);
+                    return (
+                      <tr key={job.id} className="hover:bg-gray-750">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-white">{model?.name || 'Unknown Model'}</div>
+                          <div className="text-xs text-gray-400">{model?.specialization || ''}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-white">{formatDate(job.started_at)}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            job.status === 'completed' ? 'bg-green-900 text-green-300' :
+                            job.status === 'in_progress' ? 'bg-yellow-900 text-yellow-300' :
+                            'bg-red-900 text-red-300'
+                          }`}>
+                            {job.status === 'completed' ? 'Completed' :
+                             job.status === 'in_progress' ? 'In Progress' :
+                             'Failed'}
+                          </span>
+                          {job.status === 'in_progress' && (
+                            <div className="text-xs text-gray-400 mt-1">
+                              {calculateTimeRemaining(job.estimated_completion)}
                             </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-full bg-gray-700 rounded-full h-2.5 mr-2 max-w-[100px]">
+                              <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${job.progress}%` }}></div>
+                            </div>
+                            <span className="text-sm text-white">{job.progress}%</span>
                           </div>
-                        ) : (
-                          <div className="text-sm text-red-400">
-                            {job.error || 'N/A'}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button className="text-blue-400 hover:text-blue-300">
-                          View Details
-                        </button>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-white">{(job.accuracy * 100).toFixed(1)}%</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <button
+                            onClick={() => setSelectedModel(model)}
+                            className="text-blue-400 hover:text-blue-300 mr-3"
+                          >
+                            View Model
+                          </button>
+                          {job.status === 'in_progress' && (
+                            <button
+                              className="text-red-400 hover:text-red-300"
+                            >
+                              Cancel
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  
+                  {trainingJobs.length === 0 && (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-4 text-center text-gray-400">
+                        No training jobs found
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -462,341 +887,134 @@ const DashboardAITraining = ({ user }) => {
         </div>
       )}
       
-      {/* Datasets Tab */}
-      {activeTab === 'datasets' && (
-        <div className="space-y-6">
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <div className="mb-6 flex justify-between items-center">
-              <h3 className="text-lg font-medium text-white">Data Collections</h3>
-              <button className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-colors flex items-center space-x-1">
-                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                <span>Add Dataset</span>
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-gray-750 rounded-lg p-5 border border-gray-700 hover:border-blue-500 transition-colors">
-                <div className="flex justify-between mb-4">
-                  <div className="p-2 bg-blue-900 rounded-full text-blue-300">
-                    <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <span className="text-xs text-blue-300 bg-blue-900 bg-opacity-50 py-1 px-2 rounded-full">
-                    1,254 samples
-                  </span>
-                </div>
-                <h4 className="text-lg font-medium text-white mb-1">Chest X-Ray Collection</h4>
-                <p className="text-gray-400 text-sm mb-4">
-                  Annotated chest X-rays for pneumonia, tuberculosis and lung cancer detection.
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">Last updated: Jun 10, 2023</span>
-                  <button className="text-blue-400 hover:text-blue-300 text-sm">
-                    Browse
-                  </button>
-                </div>
-              </div>
-              
-              <div className="bg-gray-750 rounded-lg p-5 border border-gray-700 hover:border-blue-500 transition-colors">
-                <div className="flex justify-between mb-4">
-                  <div className="p-2 bg-purple-900 rounded-full text-purple-300">
-                    <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <span className="text-xs text-purple-300 bg-purple-900 bg-opacity-50 py-1 px-2 rounded-full">
-                    842 samples
-                  </span>
-                </div>
-                <h4 className="text-lg font-medium text-white mb-1">Brain MRI Collection</h4>
-                <p className="text-gray-400 text-sm mb-4">
-                  Segmented brain MRIs for tumor, hemorrhage and infarction detection.
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">Last updated: May 25, 2023</span>
-                  <button className="text-blue-400 hover:text-blue-300 text-sm">
-                    Browse
-                  </button>
-                </div>
-              </div>
-              
-              <div className="bg-gray-750 rounded-lg p-5 border border-gray-700 hover:border-blue-500 transition-colors">
-                <div className="flex justify-between mb-4">
-                  <div className="p-2 bg-green-900 rounded-full text-green-300">
-                    <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <span className="text-xs text-green-300 bg-green-900 bg-opacity-50 py-1 px-2 rounded-full">
-                    976 samples
-                  </span>
-                </div>
-                <h4 className="text-lg font-medium text-white mb-1">Bone X-Ray Collection</h4>
-                <p className="text-gray-400 text-sm mb-4">
-                  Annotated bone X-rays for fracture and dislocation detection.
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">Last updated: Apr 15, 2023</span>
-                  <button className="text-blue-400 hover:text-blue-300 text-sm">
-                    Browse
-                  </button>
-                </div>
-              </div>
-              
-              <div className="bg-gray-750 rounded-lg p-5 border border-gray-700 hover:border-blue-500 transition-colors">
-                <div className="flex justify-between mb-4">
-                  <div className="p-2 bg-red-900 rounded-full text-red-300">
-                    <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <span className="text-xs text-red-300 bg-red-900 bg-opacity-50 py-1 px-2 rounded-full">
-                    1,532 samples
-                  </span>
-                </div>
-                <h4 className="text-lg font-medium text-white mb-1">COVID-19 Collection</h4>
-                <p className="text-gray-400 text-sm mb-4">
-                  Chest X-rays and CT scans for COVID-19 and pneumonia detection.
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">Last updated: Mar 30, 2023</span>
-                  <button className="text-blue-400 hover:text-blue-300 text-sm">
-                    Browse
-                  </button>
-                </div>
-              </div>
-              
-              <div className="bg-gray-750 rounded-lg p-5 border border-gray-700 hover:border-blue-500 transition-colors">
-                <div className="flex justify-between mb-4">
-                  <div className="p-2 bg-yellow-900 rounded-full text-yellow-300">
-                    <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <span className="text-xs text-yellow-300 bg-yellow-900 bg-opacity-50 py-1 px-2 rounded-full">
-                    324 samples
-                  </span>
-                </div>
-                <h4 className="text-lg font-medium text-white mb-1">Heart CT Collection</h4>
-                <p className="text-gray-400 text-sm mb-4">
-                  CT scans for heart conditions and abnormalities detection.
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">Last updated: Feb 15, 2023</span>
-                  <button className="text-blue-400 hover:text-blue-300 text-sm">
-                    Browse
-                  </button>
-                </div>
-              </div>
-              
-              <div className="bg-blue-900 bg-opacity-30 rounded-lg p-5 border-2 border-dashed border-blue-500 hover:bg-blue-900 hover:bg-opacity-40 transition-colors flex flex-col items-center justify-center text-center cursor-pointer">
-                <div className="p-3 rounded-full bg-blue-900 bg-opacity-50 text-blue-300 mb-4">
-                  <svg className="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                </div>
-                <h4 className="text-lg font-medium text-white mb-1">Create New Dataset</h4>
-                <p className="text-blue-300 text-sm">
-                  Upload and annotate a new collection of medical images
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <h3 className="text-lg font-medium text-white mb-6">Data Upload & Preparation</h3>
-            <div className="flex flex-col md:flex-row md:space-x-8 space-y-6 md:space-y-0">
-              <div className="bg-gray-750 rounded-lg p-5 border border-gray-700 md:w-1/2">
-                <h4 className="text-md font-medium text-white mb-4 flex items-center">
-                  <svg className="h-5 w-5 mr-2 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                  </svg>
-                  Upload New Images
-                </h4>
-                <div className="flex items-center justify-center w-full">
-                  <label className="flex flex-col w-full h-32 border-2 border-dashed border-gray-600 rounded-lg cursor-pointer hover:bg-gray-700 hover:border-gray-500">
-                    <div className="flex flex-col items-center justify-center pt-7">
-                      <svg className="w-10 h-10 text-gray-400 mb-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                      </svg>
-                      <p className="pt-1 text-sm text-gray-400">
-                        <span className="font-semibold">Click to upload</span> or drag and drop
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        DICOM, JPEG, PNG (max. 50MB per file)
-                      </p>
-                    </div>
-                    <input type="file" className="hidden" multiple accept="image/*,.dcm" />
-                  </label>
-                </div>
-              </div>
-              
-              <div className="bg-gray-750 rounded-lg p-5 border border-gray-700 md:w-1/2">
-                <h4 className="text-md font-medium text-white mb-4 flex items-center">
-                  <svg className="h-5 w-5 mr-2 text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                  </svg>
-                  Data Labeling & Annotation
-                </h4>
-                <p className="text-gray-300 text-sm mb-4">
-                  Use our annotation tools to mark areas of interest in your medical images for more accurate AI training.
-                </p>
-                <button className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-md transition-colors">
-                  Open Annotation Tool
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* Create Model Modal */}
-      {showUploadModal && (
-        <div className="fixed inset-0 overflow-y-auto z-50">
-          <div className="flex items-center justify-center min-h-screen px-4 text-center">
-            <div 
-              className="fixed inset-0 bg-black bg-opacity-75 transition-opacity"
-              onClick={() => setShowUploadModal(false)}
-            ></div>
-            
-            <div className="bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all max-w-lg w-full">
-              <div className="px-6 py-4 border-b border-gray-700">
+      {/* New Model Modal */}
+      {showNewModelModal && (
+        <div className="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center p-4 bg-black bg-opacity-75">
+          <div className="relative max-w-xl w-full">
+            <div className="bg-gray-800 rounded-lg shadow-xl border border-gray-700 overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
                 <h3 className="text-lg font-medium text-white">Create New AI Model</h3>
+                <button
+                  onClick={() => setShowNewModelModal(false)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
               
               <div className="p-6">
-                <form className="space-y-4">
+                <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">
-                      Model Name
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-1">
+                      Model Name <span className="text-red-500">*</span>
                     </label>
-                    <input 
-                      type="text" 
-                      className="w-full bg-gray-700 border border-gray-600 rounded-md text-white py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="e.g., Lung Nodule Detection"
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={newModelData.name}
+                      onChange={handleNewModelInputChange}
+                      required
+                      className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="e.g., Cardiac MRI Analyzer"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">
-                      Model Type
+                    <label htmlFor="specialization" className="block text-sm font-medium text-gray-400 mb-1">
+                      Specialization <span className="text-red-500">*</span>
                     </label>
-                    <select className="w-full bg-gray-700 border border-gray-600 rounded-md text-white py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                      <option value="">Select model type</option>
-                      <option value="classification">Classification</option>
-                      <option value="detection">Detection</option>
-                      <option value="segmentation">Segmentation</option>
-                      <option value="regression">Regression</option>
+                    <select
+                      id="specialization"
+                      name="specialization"
+                      value={newModelData.specialization}
+                      onChange={handleNewModelInputChange}
+                      required
+                      className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">Select Specialization</option>
+                      <option value="Chest X-rays">Chest X-rays</option>
+                      <option value="Brain MRI">Brain MRI</option>
+                      <option value="Abdominal CT">Abdominal CT</option>
+                      <option value="Joint X-rays">Joint X-rays</option>
+                      <option value="Cardiac MRI">Cardiac MRI</option>
+                      <option value="Mammography">Mammography</option>
+                      <option value="Dental X-rays">Dental X-rays</option>
+                      <option value="Ultrasound Images">Ultrasound Images</option>
                     </select>
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">
-                      Base Architecture
+                    <label htmlFor="baseModel" className="block text-sm font-medium text-gray-400 mb-1">
+                      Base Model <span className="text-red-500">*</span>
                     </label>
-                    <select className="w-full bg-gray-700 border border-gray-600 rounded-md text-white py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                      <option value="">Select base architecture</option>
-                      <option value="resnet50">ResNet-50</option>
-                      <option value="densenet121">DenseNet-121</option>
-                      <option value="efficientnet">EfficientNet</option>
-                      <option value="unet">U-Net</option>
-                      <option value="vit">Vision Transformer</option>
+                    <select
+                      id="baseModel"
+                      name="baseModel"
+                      value={newModelData.baseModel}
+                      onChange={handleNewModelInputChange}
+                      required
+                      className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="ZemedicAI Core v2.1">ZemedicAI Core v2.1</option>
+                      <option value="ZemedicAI Radiology v1.5">ZemedicAI Radiology v1.5</option>
+                      <option value="ZemedicAI Neurology v2.0">ZemedicAI Neurology v2.0</option>
+                      <option value="ZemedicAI Cardiology v1.2">ZemedicAI Cardiology v1.2</option>
                     </select>
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">
-                      Training Dataset
+                    <label htmlFor="datasetSize" className="block text-sm font-medium text-gray-400 mb-1">
+                      Initial Dataset Size <span className="text-red-500">*</span>
                     </label>
-                    <select className="w-full bg-gray-700 border border-gray-600 rounded-md text-white py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                      <option value="">Select dataset</option>
-                      <option value="chest-xray">Chest X-Ray Collection (1,254 samples)</option>
-                      <option value="brain-mri">Brain MRI Collection (842 samples)</option>
-                      <option value="bone-xray">Bone X-Ray Collection (976 samples)</option>
-                      <option value="covid-19">COVID-19 Collection (1,532 samples)</option>
-                      <option value="heart-ct">Heart CT Collection (324 samples)</option>
-                    </select>
+                    <input
+                      type="number"
+                      id="datasetSize"
+                      name="datasetSize"
+                      value={newModelData.datasetSize}
+                      onChange={handleNewModelInputChange}
+                      required
+                      className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="e.g., 5000"
+                      min="1000"
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                      Minimum recommended: 1,000 samples. For optimal performance: 10,000+ samples.
+                    </p>
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">
-                      Advanced Options
+                    <label htmlFor="description" className="block text-sm font-medium text-gray-400 mb-1">
+                      Description
                     </label>
-                    <div className="bg-gray-750 rounded-lg p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            id="transferLearning" 
-                            className="rounded bg-gray-700 border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-offset-gray-800"
-                          />
-                          <label htmlFor="transferLearning" className="ml-2 text-sm text-gray-300">
-                            Use transfer learning
-                          </label>
-                        </div>
-                        
-                        <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            id="dataAugmentation" 
-                            className="rounded bg-gray-700 border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-offset-gray-800"
-                          />
-                          <label htmlFor="dataAugmentation" className="ml-2 text-sm text-gray-300">
-                            Enable data augmentation
-                          </label>
-                        </div>
-                        
-                        <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            id="ensembleLearning" 
-                            className="rounded bg-gray-700 border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-offset-gray-800"
-                          />
-                          <label htmlFor="ensembleLearning" className="ml-2 text-sm text-gray-300">
-                            Use ensemble learning
-                          </label>
-                        </div>
-                        
-                        <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                    </div>
+                    <textarea
+                      id="description"
+                      name="description"
+                      value={newModelData.description}
+                      onChange={handleNewModelInputChange}
+                      rows="3"
+                      className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Describe the purpose and capabilities of your model..."
+                    ></textarea>
                   </div>
-                </form>
-              </div>
-              
-              <div className="px-6 py-4 border-t border-gray-700 flex justify-end space-x-3">
-                <button 
-                  onClick={() => setShowUploadModal(false)}
-                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-md transition-colors"
-                >
-                  Cancel
-                </button>
-                <button 
-                  onClick={() => {
-                    setShowUploadModal(false);
-                    startTraining();
-                  }}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-colors"
-                >
-                  Create & Start Training
-                </button>
+                </div>
+                
+                <div className="mt-8 flex justify-end space-x-3">
+                  <button
+                    onClick={() => setShowNewModelModal(false)}
+                    className="px-4 py-2 border border-gray-600 text-gray-300 rounded-md hover:bg-gray-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleCreateModel}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition-colors"
+                  >
+                    Create Model
+                  </button>
+                </div>
               </div>
             </div>
           </div>
