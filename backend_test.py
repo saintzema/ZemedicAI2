@@ -189,12 +189,22 @@ def main():
     # Run tests
     health_success, _ = tester.test_health_check()
     
-    # Test with provided test credentials
+    # Test with demo accounts
     if health_success:
-        print("\n🔍 Testing with provided test credentials...")
-        login_success, _ = tester.test_login_with_credentials("newtest@example.com", "testpassword")
+        # Test patient demo account
+        print("\n🔍 Testing with patient demo account...")
+        patient_login_success, _ = tester.test_login_with_credentials("patient@example.com", "testpassword")
         
-        if login_success:
+        if patient_login_success:
+            tester.test_get_user_profile()
+            # Test Google Health API integration
+            tester.test_google_health_api()
+        
+        # Test doctor demo account
+        print("\n🔍 Testing with doctor demo account...")
+        doctor_login_success, _ = tester.test_login_with_credentials("doctor@example.com", "testpassword")
+        
+        if doctor_login_success:
             tester.test_get_user_profile()
             # Test Google Health API integration
             tester.test_google_health_api()
