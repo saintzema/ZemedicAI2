@@ -6,13 +6,13 @@ import APIKeyModal from './APIKeyModal';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const NewDashboard = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
-  const [apiKey, setApiKey] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [showAPIKeyModal, setShowAPIKeyModal] = useState(false);
+  const [userHasAPIKey, setUserHasAPIKey] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'patient');
   
   // Check if API key is already stored
   useEffect(() => {
