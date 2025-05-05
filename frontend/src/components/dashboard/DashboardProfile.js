@@ -49,24 +49,28 @@ const DashboardProfile = () => {
         // In a real application, we would fetch the profile from the API
         // For demo purposes, we'll use mock data
         
+        // Get role for different demo data
+        const role = localStorage.getItem('userRole') || 'patient';
+        setUserRole(role);
+        
         // Simulate API call delay
         await new Promise(resolve => setTimeout(resolve, 800));
         
         // Mock profile data
         const mockProfile = {
-          first_name: user.first_name || 'John',
-          last_name: user.last_name || 'Doe',
-          email: user.email || 'john.doe@example.com',
+          first_name: role === 'doctor' ? 'Sarah' : 'John',
+          last_name: role === 'doctor' ? 'Johnson' : 'Doe',
+          email: role === 'doctor' ? 'dr.sarah@zemedicai.com' : 'john.doe@example.com',
           phone: '+1 (555) 123-4567',
           address: {
-            street: '123 Main St',
+            street: role === 'doctor' ? '456 Medical Plaza' : '123 Main St',
             city: 'New York',
             state: 'NY',
             postal_code: '10001',
             country: 'United States'
           },
-          date_of_birth: '1980-01-15',
-          gender: user.role === 'doctor' ? 'Male' : 'Female',
+          date_of_birth: role === 'doctor' ? '1975-06-12' : '1985-01-15',
+          gender: role === 'doctor' ? 'Female' : 'Male',
           emergency_contact: {
             name: 'Jane Doe',
             relationship: 'Spouse',
@@ -78,7 +82,9 @@ const DashboardProfile = () => {
             medications: 'Lisinopril, Albuterol',
             blood_type: 'O+'
           },
-          profile_picture: user.avatar || '/images/avatar-placeholder.jpg'
+          profile_picture: role === 'doctor' 
+            ? 'https://randomuser.me/api/portraits/women/28.jpg' 
+            : 'https://randomuser.me/api/portraits/men/32.jpg'
         };
         
         setProfile(mockProfile);
@@ -91,7 +97,7 @@ const DashboardProfile = () => {
     };
     
     fetchProfile();
-  }, [user]);
+  }, []);
   
   // Handle input change
   const handleInputChange = (section, field, value) => {
