@@ -3,6 +3,9 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import NewDashboardSidebar from './NewDashboardSidebar';
 import APIKeyModal from './APIKeyModal';
 
+// For debugging
+console.log('NewDashboard component loaded');
+
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const NewDashboard = () => {
