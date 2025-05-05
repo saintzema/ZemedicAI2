@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const DashboardOverview = ({ user, setShowUploadModal }) => {
+const DashboardOverview = () => {
   const [stats, setStats] = useState({
     totalScans: 0,
     pendingAnalyses: 0,
@@ -16,6 +16,7 @@ const DashboardOverview = ({ user, setShowUploadModal }) => {
   const [recentScans, setRecentScans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'patient');
   
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -26,26 +27,32 @@ const DashboardOverview = ({ user, setShowUploadModal }) => {
         // Simulate API call delay
         await new Promise(resolve => setTimeout(resolve, 800));
         
+        // Check if role has changed
+        const storedRole = localStorage.getItem('userRole');
+        if (storedRole && storedRole !== userRole) {
+          setUserRole(storedRole);
+        }
+        
         // Mock statistics based on user role
         const mockStats = {
-          totalScans: user.role === 'doctor' ? 247 : 12,
-          pendingAnalyses: user.role === 'doctor' ? 18 : 0,
-          completedAnalyses: user.role === 'doctor' ? 229 : 12,
-          findings: user.role === 'doctor' ? 167 : 8,
-          upcomingAppointments: user.role === 'doctor' ? 34 : 2
+          totalScans: userRole === 'doctor' ? 247 : 12,
+          pendingAnalyses: userRole === 'doctor' ? 18 : 0,
+          completedAnalyses: userRole === 'doctor' ? 229 : 12,
+          findings: userRole === 'doctor' ? 167 : 8,
+          upcomingAppointments: userRole === 'doctor' ? 34 : 2
         };
         
         // Mock recent scans
         const mockRecentScans = [
           {
             id: 'scan-001',
-            patient_name: user.role === 'doctor' ? 'Alice Johnson' : `${user.first_name} ${user.last_name}`,
+            patient_name: userRole === 'doctor' ? 'Alice Johnson' : 'John Doe',
             scan_type: 'X-Ray',
             body_part: 'Chest',
             date: '2023-05-10T14:30:00Z',
             status: 'Completed',
             findings: 2,
-            doctor: user.role === 'doctor' ? 'Self' : 'Dr. Sarah Johnson'
+            doctor: userRole === 'doctor' ? 'Self' : 'Dr. Sarah Johnson'
           },
           {
             id: 'scan-002',
