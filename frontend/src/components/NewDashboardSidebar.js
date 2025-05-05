@@ -21,6 +21,7 @@ const NewDashboardSidebar = ({ userRole = 'patient', isCollapsed = false, toggle
   }, []);
 
   const logout = () => {
+    console.log('Logout clicked');
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
     localStorage.removeItem('userRole');
