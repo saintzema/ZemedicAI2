@@ -167,21 +167,21 @@ const DashboardProfile = () => {
   if (loading) {
     return (
       <div className="animate-pulse">
-        <div className="h-8 bg-gray-800 rounded mb-6"></div>
-        <div className="h-64 bg-gray-800 rounded-lg mb-6"></div>
-        <div className="h-64 bg-gray-800 rounded-lg"></div>
+        <div className="h-8 bg-gray-200 rounded mb-6"></div>
+        <div className="h-64 bg-gray-200 rounded-lg mb-6"></div>
+        <div className="h-64 bg-gray-200 rounded-lg"></div>
       </div>
     );
   }
   
   if (error) {
     return (
-      <div className="bg-red-900 bg-opacity-20 border border-red-700 rounded-lg p-6 text-center">
+      <div className="bg-red-100 border border-red-300 rounded-lg p-6 text-center">
         <svg className="h-12 w-12 text-red-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
-        <h3 className="text-xl font-medium text-white mb-2">Failed to Load Profile</h3>
-        <p className="text-red-300 mb-4">{error}</p>
+        <h3 className="text-xl font-medium text-gray-800 mb-2">Failed to Load Profile</h3>
+        <p className="text-red-600 mb-4">{error}</p>
         <button 
           onClick={() => window.location.reload()} 
           className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
