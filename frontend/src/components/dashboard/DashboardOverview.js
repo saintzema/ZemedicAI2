@@ -107,12 +107,18 @@ const DashboardOverview = () => {
     };
     
     fetchDashboardData();
-  }, [user]);
+  }, [userRole]);
   
   // Format date
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+  
+  // Function to handle new scan upload
+  const handleNewScan = () => {
+    // In a real app, this would open a modal or redirect to upload page
+    alert('This would open the scan upload functionality in a real app');
   };
   
   if (loading) {
