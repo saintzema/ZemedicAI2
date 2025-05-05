@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
-const APIKeyModal = ({ isOpen, onClose, onSave }) => {
+const APIKeyModal = ({ onSubmit, onSkip, onClose }) => {
   const [apiKey, setApiKey] = useState('');
   const [error, setError] = useState('');
   const [showKey, setShowKey] = useState(false);
   const [saving, setSaving] = useState(false);
   
   useEffect(() => {
-    // Load saved API key when modal opens
-    if (isOpen) {
-      const savedKey = localStorage.getItem('googleHealthApiKey');
-      if (savedKey) {
-        setApiKey(savedKey);
-      }
+    // Load saved API key when component mounts
+    const savedKey = localStorage.getItem('googleHealthApiKey');
+    if (savedKey) {
+      setApiKey(savedKey);
     }
-  }, [isOpen]);
+  }, []);
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,8 +21,7 @@ const APIKeyModal = ({ isOpen, onClose, onSave }) => {
     if (!apiKey.trim()) {
       // If the field is empty, clear the saved key
       localStorage.removeItem('googleHealthApiKey');
-      onSave('');
-      onClose();
+      onSubmit('');
       return;
     }
     
@@ -43,10 +40,7 @@ const APIKeyModal = ({ isOpen, onClose, onSave }) => {
         localStorage.setItem('googleHealthApiKey', apiKey);
         
         // Notify parent component
-        onSave(apiKey);
-        
-        // Close modal
-        onClose();
+        onSubmit(apiKey);
       } catch (err) {
         console.error('Error saving API key:', err);
         setError('Failed to save API key. Please try again.');
@@ -55,8 +49,6 @@ const APIKeyModal = ({ isOpen, onClose, onSave }) => {
       }
     }, 500); // Simulated delay
   };
-  
-  if (!isOpen) return null;
   
   return (
     <div className="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center p-4 bg-black bg-opacity-75">
