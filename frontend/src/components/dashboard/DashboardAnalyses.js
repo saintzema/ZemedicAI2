@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const DashboardAnalyses = ({ user }) => {
+const DashboardAnalyses = () => {
   const [searchParams] = useSearchParams();
   const scanId = searchParams.get('id');
   
@@ -14,13 +14,14 @@ const DashboardAnalyses = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [view, setView] = useState('detailed'); // 'detailed' or 'summary'
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'patient');
   
   // Mock analysis data
   const [analysisData, setAnalysisData] = useState({
     id: 'analysis-001',
     scan_id: scanId || 'scan-001',
     patient: {
-      name: user.role === 'doctor' ? 'Alice Johnson' : `${user.first_name} ${user.last_name}`,
+      name: userRole === 'doctor' ? 'Alice Johnson' : 'John Doe',
       age: 42,
       gender: 'Female',
       id: 'patient-001'
