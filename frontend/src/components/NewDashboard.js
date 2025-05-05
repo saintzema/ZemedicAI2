@@ -189,6 +189,12 @@ const NewDashboard = () => {
     }
   };
   
+  // Toggle sidebar for mobile view
+  const toggleSidebar = () => {
+    console.log('Toggling sidebar:', !sidebarOpen);
+    setSidebarOpen(!sidebarOpen);
+  };
+
   // Get unread notification count
   const unreadNotificationsCount = notifications.filter(notification => !notification.read).length;
   
