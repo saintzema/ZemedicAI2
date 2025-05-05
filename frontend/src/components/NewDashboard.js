@@ -14,44 +14,38 @@ const NewDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'patient');
   
-  // Check if API key is already stored
+  // Handle responsive design
   useEffect(() => {
-    const storedApiKey = localStorage.getItem('googleHealthApiKey');
-    if (storedApiKey) {
-      setApiKey(storedApiKey);
-    }
-    
-    // Fetch user data from backend (or use demo user if token doesn't exist)
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        
-        if (token) {
-          try {
-            const response = await axios.get(`${API}/users/me`, {
-              headers: { Authorization: `Bearer ${token}` }
-            });
-            setUser(response.data);
-          } catch (err) {
-            console.error("Failed to fetch user data:", err);
-            // Use demo data if API call fails
-            setUser(getDemoUser());
-          }
-        } else {
-          // Use demo data if no token exists
-          setUser(getDemoUser());
-        }
-        
-        setLoading(false);
-      } catch (err) {
-        console.error("Error loading user data:", err);
-        setError("Failed to load user data. Please try refreshing the page.");
-        setLoading(false);
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile && !sidebarOpen) {
+        setSidebarOpen(true);
       }
     };
-    
-    fetchUserData();
-  }, []);
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [sidebarOpen]);
+
+  useEffect(() => {
+    // Check if the user has an API key in localStorage
+    const apiKey = localStorage.getItem('googleHealthApiKey');
+    if (apiKey) {
+      setUserHasAPIKey(true);
+    } else {
+      // Only show modal for certain roles
+      if (['doctor', 'admin'].includes(userRole)) {
+        setShowAPIKeyModal(true);
+      }
+    }
+
+    // Check user role
+    const storedRole = localStorage.getItem('userRole');
+    if (storedRole) {
+      setUserRole(storedRole);
+    }
+  }, [userRole]);
   
   // Demo user data
   const getDemoUser = () => ({
