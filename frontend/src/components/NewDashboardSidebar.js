@@ -150,7 +150,7 @@ const NewDashboardSidebar = ({ userRole = 'patient' }) => {
   
   // Filter navigation items based on user role
   const filteredNavigation = navigationItems.filter(item => 
-    item.role === 'all' || item.role === user?.role
+    item.roles.includes('all') || item.roles.includes(userRole)
   );
   
   // Check if a link is active
