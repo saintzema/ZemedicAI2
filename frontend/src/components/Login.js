@@ -64,21 +64,7 @@ const Login = ({ onDemoLogin }) => {
     }
   };
   
-  // Handle demo account login
-  const loginWithDemoAccount = (role) => {
-    setLoading(true);
-    
-    // Simulate a token for the demo account
-    const demoToken = `demo-token-${role}-${Date.now()}`;
-    localStorage.setItem('token', demoToken);
-    
-    // Store user role for demo
-    localStorage.setItem('demoUserRole', role);
-    
-    // Update auth state and redirect
-    setIsLoggedIn(true);
-    navigate('/dashboard');
-  };
+
   
   return (
     <div className="min-h-screen flex flex-col bg-gray-900">
